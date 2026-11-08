@@ -8237,6 +8237,7 @@ var Lemmings;
             this.soundIndex = 0;
             this.gameResources = null;
             this.musicPlayer = null;
+            this.musicPlaybackEnabled = false;
             this.soundPlayer = null;
             this.game = null;
             this.gameFactory = new Lemmings.GameFactory("./");
@@ -8355,19 +8356,25 @@ var Lemmings;
         playMusic(moveInterval) {
             this.stopMusic();
             if (!this.gameResources)
-                return;
+                return Promise.resolve();
+            this.musicPlaybackEnabled = true;
             if (moveInterval == null)
                 moveInterval = 0;
             this.musicIndex += moveInterval;
             this.musicIndex = (this.musicIndex < 0) ? 0 : this.musicIndex;
             this.changeHtmlText(this.elementTrackNumber, this.musicIndex.toString());
-            this.gameResources.getMusicPlayer(this.musicIndex)
+            return this.gameResources.getMusicPlayer(this.musicIndex)
                 .then((player) => {
+                if (!this.musicPlaybackEnabled) {
+                    player.stop();
+                    return;
+                }
                 this.musicPlayer = player;
                 this.musicPlayer.play();
             });
         }
         stopMusic() {
+            this.musicPlaybackEnabled = false;
             if (this.musicPlayer) {
                 this.musicPlayer.stop();
                 this.musicPlayer = null;
@@ -8545,11 +8552,11 @@ var Lemmings;
             if (this.startProgress) {
                 this.applyStartProgress(this.startProgress);
             }
-            this.gameFactory.getGameResources(this.gameType)
+            return this.gameFactory.getGameResources(this.gameType)
                 .then((newGameResources) => {
                 this.gameResources = newGameResources;
                 this.arrayToSelect(this.elementSelectLevelGroup, this.gameResources.getLevelGroups());
-                this.loadLevel();
+                return this.loadLevel();
             });
         }
         /** load a level and render it to the display */

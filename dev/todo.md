@@ -12,7 +12,7 @@ https://www.spriters-resource.com/nes/starwarsnamco/
 
 
 Parameters:
-s
+
 http://localhost:8080/?user=admin&wicket=4
 
     ?user=admin

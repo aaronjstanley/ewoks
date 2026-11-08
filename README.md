@@ -22,6 +22,7 @@ Before starting a rescue, open **Options** to choose:
 - Game speed
 - Episode
 - Difficulty
+- Music on or off
 
 ## Project structure
 

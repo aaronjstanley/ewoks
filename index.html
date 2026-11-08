@@ -18,7 +18,7 @@
   <link rel="preload" href="img/ewoks.png" as="image" />
   <link type="text/css" rel="stylesheet" href="css/game.css">
   <script type="text/javascript" src="js/jquery.js"></script>
-  <script type="text/javascript" src="js/lemmings.js?v=ewoks-44"></script>
+  <script type="text/javascript" src="js/lemmings.js?v=ewoks-45"></script>
   <script type="text/javascript" src="js/player-progress.js"></script>
   <script type="text/javascript">
     var lemmings;
@@ -44,6 +44,9 @@
         ? parsedWicketParameter
         : null;
     var SESSION_PROGRESS_KEY = "ewoks-session-progress";
+    var MUSIC_PREFERENCE_KEY = "ewoks-music-enabled";
+    var musicEnabled = true;
+    var optionsOpenedFromGame = false;
     var wicketCount = 0;
     var wicketSpriteSheet = new Image();
     wicketSpriteSheet.src = "img/wicket.png";
@@ -63,11 +66,13 @@
       document.getElementById("playerForm").addEventListener("submit", registerPlayer);
       document.getElementById("ewokCharacter").addEventListener("click", playEwokSound);
       document.getElementById("optionsButton").addEventListener("click", openOptions);
+      document.getElementById("gameOptionsButton").addEventListener("click", openGameOptions);
       document.getElementById("optionsClose").addEventListener("click", closeOptions);
       document.getElementById("gameSpeed").addEventListener("input", updateSpeedOutput);
-      document.getElementById("gameSpeed").addEventListener("change", saveOptions);
+      document.getElementById("gameSpeed").addEventListener("change", handleSpeedChange);
       document.getElementById("gameVersion").addEventListener("change", handleVersionChange);
       document.getElementById("gameDifficulty").addEventListener("change", saveOptions);
+      document.getElementById("musicToggle").addEventListener("change", handleMusicToggle);
       document.getElementById("optionsPanel").addEventListener("keydown", handleOptionsKeydown);
       document.getElementById("backToHome").addEventListener("click", backToHome);
       document.getElementById("wicketButton").addEventListener("click", openWicketPrompt);
@@ -84,18 +89,54 @@
       document.getElementById("gameVersion").value = "1";
       document.getElementById("gameDifficulty").value = "1";
       document.getElementById("gameSpeed").value = "1";
+      try {
+        musicEnabled = localStorage.getItem(MUSIC_PREFERENCE_KEY) !== "false";
+      } catch (error) {
+        musicEnabled = true;
+      }
+      document.getElementById("musicToggle").checked = musicEnabled;
+      updateMusicOutput();
       enforceVersionDifficulty();
       updateSpeedOutput();
     }
 
     function openOptions() {
       var panel = document.getElementById("optionsPanel");
+      optionsOpenedFromGame = false;
+      panel.classList.remove("options_panel--in-game");
+      document.getElementById("optionsDescription").textContent = "Choose how your rescue begins.";
+      panel.hidden = false;
+      document.getElementById("gameSpeed").focus();
+    }
+
+    function openGameOptions() {
+      var panel = document.getElementById("optionsPanel");
+
+      if (!lemmings) {
+        return;
+      }
+
+      optionsOpenedFromGame = true;
+      lemmings.suspend();
+      document.getElementById("gameSpeed").value = String(lemmings.gameSpeedFactor);
+      updateSpeedOutput();
+      document.getElementById("optionsDescription").textContent = "Adjust the current rescue.";
+      panel.classList.add("options_panel--in-game");
       panel.hidden = false;
       document.getElementById("gameSpeed").focus();
     }
 
     function closeOptions() {
       document.getElementById("optionsPanel").hidden = true;
+      if (optionsOpenedFromGame) {
+        optionsOpenedFromGame = false;
+        document.getElementById("optionsPanel").classList.remove("options_panel--in-game");
+        if (lemmings) {
+          lemmings.continue();
+        }
+        document.getElementById("gameOptionsButton").focus();
+        return;
+      }
       document.getElementById("optionsButton").focus();
     }
 
@@ -129,6 +170,45 @@
 
     function saveOptions() {
       gameOptionsChanged = true;
+    }
+
+    function handleSpeedChange() {
+      saveOptions();
+      if (lemmings) {
+        lemmings.selectSpeedFactor(Number(document.getElementById("gameSpeed").value));
+      }
+    }
+
+    function handleMusicToggle() {
+      var music = document.getElementById("titleMusic");
+
+      musicEnabled = document.getElementById("musicToggle").checked;
+      updateMusicOutput();
+
+      try {
+        localStorage.setItem(MUSIC_PREFERENCE_KEY, String(musicEnabled));
+      } catch (error) {
+        // The preference still applies until this page is closed.
+      }
+
+      if (!musicEnabled) {
+        music.pause();
+        music.currentTime = 0;
+        if (lemmings) {
+          lemmings.stopMusic();
+        }
+        return;
+      }
+
+      if (lemmings) {
+        lemmings.playMusic(0);
+      } else {
+        playTitleMusic();
+      }
+    }
+
+    function updateMusicOutput() {
+      document.getElementById("musicToggleValue").textContent = musicEnabled ? "On" : "Off";
     }
 
     function selectedStartProgress(player) {
@@ -175,7 +255,7 @@
     function playTitleMusic() {
       var music = document.getElementById("titleMusic");
 
-      if (!music || lemmings || !music.paused) {
+      if (!music || !musicEnabled || lemmings || !music.paused) {
         return;
       }
 
@@ -279,9 +359,14 @@
         };
         lemmings.elementLevelName = document.getElementById("levelName");
         lemmings.gameCanvas = document.getElementById("gameCanvas");
-        lemmings.setup();
+        lemmings.setup().then(function () {
+          if (musicEnabled) {
+            lemmings.playMusic(0);
+          }
+        });
         titleScreen.hidden = true;
         document.getElementById("backToHome").hidden = false;
+        document.getElementById("gameOptionsButton").hidden = false;
       }, 420);
     }
 
@@ -672,6 +757,12 @@
         <img id="previousLevel" class="arrow_l" src="img/arrow_l.png" alt="Previous level" style="display: none" onclick="lemmings.moveToLevel(-1)"/>
         <img id="nextLevel" class="arrow_r" src="img/arrow_r.png" alt="Next level" style="display: none" onclick="lemmings.moveToLevel(1)"/>
         <a id="backToHome" class="back_to_home" href="./" aria-label="Back to Home" title="Back to Home" hidden></a>
+        <button
+          class="game_options_button"
+          id="gameOptionsButton"
+          type="button"
+          hidden
+        >Options</button>
         <button class="wicket_button" id="wicketButton" type="button" hidden>
           <canvas
             class="wicket_sprite_canvas wicket_sprite_canvas--toolbar"
@@ -802,59 +893,75 @@
           <p class="title_hint">Choose a skill. Clear a path. Save the tribe. Alaay loo ta nuv!</p>
         </section>
 
-        <section
-          class="options_panel"
-          id="optionsPanel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="optionsTitle"
-          hidden
-        >
-          <header class="options_header">
-            <div>
-              <h2 id="optionsTitle">Options</h2>
-              <p>Choose how your rescue begins.</p>
-            </div>
-            <button class="options_close" id="optionsClose" type="button" aria-label="Close options">×</button>
-          </header>
-
-          <div class="option_row">
-            <div>
-              <label for="gameSpeed">Speed</label>
-              <p>Normal speed is 1×.</p>
-            </div>
-            <div class="speed_control">
-              <input id="gameSpeed" type="range" min="1" max="10" step="1" value="1" />
-              <output id="gameSpeedValue" for="gameSpeed">1×</output>
-            </div>
-          </div>
-
-          <div class="option_row">
-            <div>
-              <label for="gameVersion">Version</label>
-              <p>Select a chapter.</p>
-            </div>
-            <select id="gameVersion">
-              <option value="1">Episode I</option>
-              <option value="2">Episode II</option>
-            </select>
-          </div>
-
-          <div class="option_row">
-            <div>
-              <label for="gameDifficulty">Difficulty</label>
-              <p>Difficulty 5 is available in Episode II.</p>
-            </div>
-            <select id="gameDifficulty">
-              <option value="1">1 — Laugh It Up, Fuzzball</option>
-              <option value="2">2 — Do...or do not... there is no try.</option>
-              <option value="3">3 — It’s a trap!</option>
-              <option value="4">4 — I have a bad feeling about this.</option>
-              <option value="5">5 — Never tell me the odds.</option>
-            </select>
-          </div>
-        </section>
       </main>
+
+      <section
+        class="options_panel"
+        id="optionsPanel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="optionsTitle"
+        aria-describedby="optionsDescription"
+        hidden
+      >
+        <header class="options_header">
+          <div>
+            <h2 id="optionsTitle">Options</h2>
+            <p id="optionsDescription">Choose how your rescue begins.</p>
+          </div>
+          <button class="options_close" id="optionsClose" type="button" aria-label="Close options">×</button>
+        </header>
+
+        <div class="option_row">
+          <div>
+            <label for="gameSpeed">Speed</label>
+            <p>Normal speed is 1×.</p>
+          </div>
+          <div class="speed_control">
+            <input id="gameSpeed" type="range" min="1" max="10" step="1" value="1" />
+            <output id="gameSpeedValue" for="gameSpeed">1×</output>
+          </div>
+        </div>
+
+        <div class="option_row start_only_option">
+          <div>
+            <label for="gameVersion">Version</label>
+            <p>Select a chapter.</p>
+          </div>
+          <select id="gameVersion">
+            <option value="1">Episode I</option>
+            <option value="2">Episode II</option>
+          </select>
+        </div>
+
+        <div class="option_row start_only_option">
+          <div>
+            <label for="gameDifficulty">Difficulty</label>
+            <p>Difficulty 5 is available in Episode II.</p>
+          </div>
+          <select id="gameDifficulty">
+            <option value="1">1 — Laugh It Up, Fuzzball</option>
+            <option value="2">2 — Do...or do not... there is no try.</option>
+            <option value="3">3 — It’s a trap!</option>
+            <option value="4">4 — I have a bad feeling about this.</option>
+            <option value="5">5 — Never tell me the odds.</option>
+          </select>
+        </div>
+
+        <div class="option_row">
+          <div>
+            <label for="musicToggle">Music</label>
+            <p>Turn the game music on or off.</p>
+          </div>
+          <div class="toggle_control">
+            <input id="musicToggle" type="checkbox" role="switch" checked />
+            <label class="toggle_track" for="musicToggle">
+              <span class="toggle_thumb" aria-hidden="true"></span>
+            </label>
+            <output id="musicToggleValue" for="musicToggle">On</output>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </body>

@@ -6,6 +6,8 @@ attachDatabasePool(pool);
 
 const allowedOrigins = new Set([
   "https://aaronjstanley.github.io",
+  "https://stanleystuff.com",
+  "https://www.stanleystuff.com",
   "http://127.0.0.1:8080",
   "http://localhost:8080",
 ]);
@@ -31,7 +33,7 @@ function cors(request: Request): HeadersInit {
   const origin = request.headers.get("origin");
   return {
     "Access-Control-Allow-Origin":
-      origin && allowedOrigins.has(origin) ? origin : "https://aaronjstanley.github.io",
+      origin && allowedOrigins.has(origin) ? origin : "https://stanleystuff.com",
     "Access-Control-Allow-Headers": "content-type",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     Vary: "Origin",

@@ -525,16 +525,18 @@ body * {
 
 .options_panel {
     position: absolute;
-    inset: 7% auto auto 8%;
-    z-index: 8;
+    top: 50%;
+    left: 50%;
+    z-index: 40;
     box-sizing: border-box;
-    width: min(70%, 570px);
+    width: min(84%, 570px);
     max-height: 86%;
     overflow: auto;
     padding: clamp(18px, 3cqw, 32px);
     background-color: #f5eed8;
     color: #132017;
     font-family: Arial, Helvetica, sans-serif;
+    transform: translate(-50%, -50%);
 }
 
 @media (orientation: portrait) {
@@ -618,7 +620,8 @@ body * {
     }
 
     .options_panel {
-        inset: max(4%, env(safe-area-inset-top)) 6% auto;
+        top: 50%;
+        left: 50%;
         width: 88%;
         max-height: calc(100% - max(8%, env(safe-area-inset-top)) - env(safe-area-inset-bottom));
     }
@@ -695,6 +698,10 @@ body * {
 }
 
 .options_panel[hidden] {
+    display: none;
+}
+
+.options_panel--in-game .start_only_option {
     display: none;
 }
 
@@ -776,7 +783,8 @@ body * {
 }
 
 .option_row select:focus-visible,
-.speed_control input:focus-visible {
+.speed_control input:focus-visible,
+.toggle_control input:focus-visible + .toggle_track {
     outline: 3px solid #eda22c;
     outline-offset: 3px;
 }
@@ -802,6 +810,63 @@ body * {
     font-size: clamp(12px, 1.8cqw, 18px);
     font-variant-numeric: tabular-nums;
     text-align: right;
+}
+
+.toggle_control {
+    display: grid;
+    grid-template-columns: 64px 3.5em;
+    gap: 14px;
+    align-items: center;
+    justify-content: end;
+}
+
+.toggle_control input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.toggle_track {
+    position: relative;
+    box-sizing: border-box;
+    width: 64px;
+    height: 36px;
+    border: 3px solid #7d3d0a;
+    background-color: #fff9e8;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.toggle_thumb {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #7d3d0a;
+    transition: transform 160ms ease;
+}
+
+.toggle_control input:checked + .toggle_track {
+    background-color: #7d3d0a;
+}
+
+.toggle_control input:checked + .toggle_track .toggle_thumb {
+    background-color: #fff9e8;
+    transform: translateX(28px);
+}
+
+.toggle_control output {
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(11px, 1.5cqw, 15px);
+    text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toggle_thumb {
+        transition: none;
+    }
 }
 
 .visually_hidden {
@@ -917,7 +982,8 @@ body * {
 
 @media (max-width: 620px), (max-height: 430px) {
     .options_panel {
-        inset: 4% 4% auto;
+        top: 50%;
+        left: 50%;
         width: 92%;
         max-height: 92%;
     }
@@ -970,16 +1036,57 @@ body * {
     display: none;
 }
 
+.game_options_button {
+    position: absolute;
+    right: 52px;
+    bottom: 5px;
+    z-index: 4;
+    height: 32px;
+    border: 2px solid #f5eed8;
+    border-radius: 0;
+    padding: 0 9px;
+    background: #071713;
+    color: #f5eed8;
+    cursor: pointer;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 7px;
+    text-transform: uppercase;
+    touch-action: manipulation;
+}
+
+.game_options_button:hover,
+.game_options_button:focus-visible {
+    border-color: #f4d96b;
+    color: #f4d96b;
+    outline: 2px solid #f4d96b;
+    outline-offset: 2px;
+}
+
+.game_options_button:active {
+    transform: translateY(2px);
+}
+
+.game_options_button[hidden] {
+    display: none;
+}
+
 .game_stage.small > .back_to_home {
     right: 8px;
     bottom: 5px;
     zoom: 0.75;
 }
 
+.game_stage.small > .game_options_button {
+    right: 38px;
+    height: 24px;
+    padding: 0 6px;
+    font-size: 5px;
+}
+
 .wicket_button {
     position: absolute;
     z-index: 5;
-    right: 7.5%;
+    right: 130px;
     bottom: 1.5%;
     display: flex;
     width: 8%;
@@ -1147,6 +1254,7 @@ body * {
 }
 
 .game_stage.small > .wicket_button {
+    right: 96px;
     min-width: 36px;
     min-height: 36px;
     padding: 1px 3px;
