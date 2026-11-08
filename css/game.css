@@ -1,0 +1,1230 @@
+@font-face {
+    font-family: "Press Start 2P";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/press-start-2p.woff2") format("woff2");
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #020706;
+}
+
+@media (orientation: landscape) {
+    html,
+    body {
+        width: 100vw;
+        height: 100dvh;
+    }
+}
+
+body,
+body * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.game,
+.game_container {
+    display: block;
+    touch-action: none;
+    width: 100vw;
+    height: 100dvh;
+}
+
+.game_container {
+    position: relative;
+    overflow: hidden;
+    container-type: size;
+    background-color: #020706;
+}
+
+.game_stage {
+    position: relative;
+    overflow: hidden;
+    width: 800px;
+    height: 480px;
+    background-color: #071713;
+}
+
+#gameCanvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    image-rendering: pixelated;
+}
+
+.title_screen {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    overflow: hidden;
+    background-color: #071713;
+    color: #f5eed8;
+    font-family: Arial, Helvetica, sans-serif;
+    opacity: 1;
+    transition: opacity 420ms ease;
+}
+
+.title_screen[hidden] {
+    display: none;
+}
+
+.title_screen--leaving {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.forest_sky,
+.forest_sky span {
+    position: absolute;
+    display: block;
+}
+
+.forest_sky {
+    inset: 0;
+    overflow: hidden;
+    background-color: #0d2a22;
+}
+
+.forest_moon {
+    top: 7%;
+    right: 14%;
+    width: 23%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: #e9d590;
+    animation: moon-breathe 5s ease-in-out infinite;
+}
+
+.forest_star {
+    width: 0.7%;
+    aspect-ratio: 1;
+    min-width: 3px;
+    border-radius: 50%;
+    background-color: #f5eed8;
+    animation: star-blink 2.8s steps(2, end) infinite;
+}
+
+.forest_star--one {
+    top: 16%;
+    left: 49%;
+}
+
+.forest_star--two {
+    top: 29%;
+    left: 59%;
+    animation-delay: 0.8s;
+}
+
+.forest_star--three {
+    top: 10%;
+    left: 69%;
+    animation-delay: 1.6s;
+}
+
+.forest_star--four {
+    top: 8%;
+    left: 35%;
+    width: 0.45%;
+    animation-delay: 0.35s;
+}
+
+.forest_star--five {
+    top: 21%;
+    left: 42%;
+    width: 0.35%;
+    animation-delay: 2.1s;
+}
+
+.forest_star--six {
+    top: 37%;
+    left: 51%;
+    width: 0.45%;
+    animation-delay: 1.15s;
+}
+
+.forest_star--seven {
+    top: 7%;
+    left: 57%;
+    width: 0.3%;
+    animation-delay: 2.45s;
+}
+
+.forest_star--eight {
+    top: 22%;
+    left: 76%;
+    width: 0.5%;
+    animation-delay: 0.6s;
+}
+
+.forest_star--nine {
+    top: 39%;
+    left: 84%;
+    width: 0.35%;
+    animation-delay: 1.85s;
+}
+
+.forest_star--ten {
+    top: 13%;
+    left: 89%;
+    width: 0.4%;
+    animation-delay: 2.7s;
+}
+
+.forest_star--eleven {
+    top: 32%;
+    left: 27%;
+    width: 0.3%;
+    animation-delay: 1.35s;
+}
+
+.forest_star--twelve {
+    top: 44%;
+    left: 37%;
+    width: 0.4%;
+    animation-delay: 0.95s;
+}
+
+.forest_tree {
+    bottom: 0;
+    width: 15%;
+    height: 88%;
+    background-color: #193f2e;
+    transform-origin: bottom center;
+}
+
+.forest_tree::before,
+.forest_tree::after {
+    position: absolute;
+    content: "";
+    display: block;
+    width: 105%;
+    height: 15%;
+    background-color: inherit;
+}
+
+.forest_tree::before {
+    top: 29%;
+    left: -78%;
+    transform: rotate(-24deg);
+    transform-origin: right center;
+}
+
+.forest_tree::after {
+    top: 48%;
+    right: -82%;
+    transform: rotate(29deg);
+    transform-origin: left center;
+}
+
+.forest_tree--left {
+    left: -7%;
+    width: 18%;
+    height: 115%;
+    background-color: #05100d;
+    transform: rotate(-3deg);
+}
+
+.forest_tree--middle {
+    right: 23%;
+    width: 11%;
+    height: 72%;
+    transform: rotate(5deg);
+}
+
+.forest_tree--right {
+    right: -5%;
+    width: 19%;
+    height: 119%;
+    background-color: #040c0a;
+    transform: rotate(4deg);
+}
+
+.forest_floor {
+    inset: auto 0 0;
+    height: 24%;
+    background-color: #030b09;
+    clip-path: polygon(0 38%, 11% 24%, 22% 42%, 36% 15%, 49% 33%, 61% 10%, 76% 31%, 88% 18%, 100% 39%, 100% 100%, 0 100%);
+}
+
+.ewok_character {
+    position: absolute;
+    right: 1.5%;
+    bottom: -7%;
+    z-index: 2;
+    display: block;
+    aspect-ratio: 723 / 1024;
+    width: auto;
+    height: 92%;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    image-rendering: pixelated;
+    transform-origin: bottom center;
+    animation: ewok-arrive 720ms 120ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.ewok_character:focus-visible {
+    outline: 3px solid #eda22c;
+    outline-offset: -3px;
+}
+
+.ewok_art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    image-rendering: pixelated;
+}
+
+.ewok_mouth {
+    position: absolute;
+    top: 34.8%;
+    left: 30.5%;
+    display: block;
+    width: 19.5%;
+    height: 6.4%;
+    overflow: hidden;
+    background-color: #050303;
+    clip-path: polygon(6% 0, 94% 0, 86% 100%, 14% 100%);
+    opacity: 0;
+    transform-origin: top center;
+}
+
+.ewok_mouth::after {
+    position: absolute;
+    right: 20%;
+    bottom: 0;
+    left: 20%;
+    height: 34%;
+    content: "";
+    background-color: #7d2d31;
+}
+
+.ewok_character--talking .ewok_mouth {
+    animation: ewok-talk 240ms linear 2 forwards;
+}
+
+.title_content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 57%;
+    height: 100%;
+    padding: 7% 0 6% 8%;
+    padding-left: max(8%, env(safe-area-inset-left));
+}
+
+.title_lockup {
+    width: 100%;
+    animation: title-arrive 700ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.franchise_mark {
+    display: block;
+    width: clamp(88px, 18cqw, 190px);
+    height: auto;
+    margin: 0 0 4%;
+    image-rendering: pixelated;
+}
+
+.title_lockup h1 {
+    max-width: 12em;
+    margin: 0;
+    color: #f7efd4;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(18px, 4cqw, 48px);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.12;
+    text-wrap: balance;
+    text-transform: uppercase;
+}
+
+.title_lockup h1 .title_name {
+    display: block;
+    color: #eda22c;
+    font-size: 0.62em;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+}
+
+.title_lockup h1 .title_chapter {
+    display: block;
+    white-space: nowrap;
+    word-spacing: -0.4em;
+}
+
+.title_mission {
+    max-width: 29em;
+    margin: 6% 0 0;
+    color: #f5eed8;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(9px, 1.75cqw, 18px);
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.start_button {
+    min-width: 13em;
+    min-height: 46px;
+    margin-top: 7%;
+    border: 0;
+    border-radius: 0;
+    padding: 0.8em 1.4em;
+    background-color: #eda22c;
+    color: #132017;
+    cursor: pointer;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(8px, 1.1cqw, 12px);
+    font-weight: 400;
+    transition: background-color 150ms ease, transform 150ms ease;
+    animation: control-arrive 600ms 240ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.start_button:hover {
+    background-color: #ffd166;
+    transform: translateY(-2px);
+}
+
+.start_button:active {
+    transform: translateY(1px);
+}
+
+.start_button:focus-visible {
+    outline: 3px solid #f7efd4;
+    outline-offset: 4px;
+}
+
+.start_button:disabled {
+    cursor: wait;
+}
+
+.player_form {
+    display: flex;
+    width: min(100%, 25em);
+    min-height: 46px;
+    margin-top: 7%;
+    animation: control-arrive 240ms ease both;
+}
+
+.player_form[hidden] {
+    display: none;
+}
+
+.player_name {
+    box-sizing: border-box;
+    width: calc(100% - 4.5em);
+    min-width: 0;
+    border: 3px solid #eda22c;
+    border-right: 0;
+    border-radius: 0;
+    padding: 0.8em 1em;
+    background-color: #f5eed8;
+    color: #132017;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(8px, 1.1cqw, 12px);
+    outline: 0;
+    touch-action: manipulation;
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.player_name::placeholder {
+    color: #596559;
+    opacity: 1;
+}
+
+.player_name:focus {
+    border-color: #ffd166;
+    background-color: #fff9e8;
+}
+
+.player_submit {
+    width: 4.5em;
+    border: 0;
+    border-radius: 0;
+    background-color: #eda22c;
+    color: #132017;
+    cursor: pointer;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(8px, 1.1cqw, 12px);
+}
+
+.player_submit:hover,
+.player_submit:focus-visible {
+    background-color: #ffd166;
+}
+
+.player_submit:disabled {
+    cursor: wait;
+}
+
+.player_save_hint {
+    margin: 1.5% 0 0;
+    color: #f5eed8;
+    font-size: clamp(6px, 0.9cqw, 10px);
+    line-height: 1.4;
+}
+
+.player_error {
+    min-height: 1.4em;
+    margin: 1.5% 0 0;
+    color: #ffd166;
+    font-size: clamp(7px, 1.2cqw, 12px);
+    line-height: 1.4;
+}
+
+.title_links {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    margin-top: 1%;
+    color: #f5eed8;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(7px, 1cqw, 11px);
+}
+
+.leaderboard_link,
+.options_button {
+    color: inherit;
+    font: inherit;
+    text-underline-offset: 0.35em;
+    touch-action: manipulation;
+}
+
+.options_button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+}
+
+.leaderboard_link:hover,
+.leaderboard_link:focus-visible,
+.options_button:hover,
+.options_button:focus-visible {
+    color: #ffd166;
+}
+
+.options_panel {
+    position: absolute;
+    inset: 7% auto auto 8%;
+    z-index: 8;
+    box-sizing: border-box;
+    width: min(70%, 570px);
+    max-height: 86%;
+    overflow: auto;
+    padding: clamp(18px, 3cqw, 32px);
+    background-color: #f5eed8;
+    color: #132017;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (orientation: portrait) {
+    .forest_moon {
+        top: 5%;
+        right: 8%;
+        width: 38%;
+    }
+
+    .forest_tree--left {
+        left: -16%;
+        width: 30%;
+    }
+
+    .forest_tree--middle {
+        right: 16%;
+        width: 18%;
+        height: 55%;
+    }
+
+    .forest_tree--right {
+        right: -14%;
+        width: 33%;
+    }
+
+    .forest_floor {
+        height: 31%;
+    }
+
+    .ewok_character {
+        right: -4%;
+        bottom: -3%;
+        height: 57%;
+    }
+
+    .title_content {
+        justify-content: flex-start;
+        width: 100%;
+        height: 61%;
+        padding: max(6vh, env(safe-area-inset-top)) 8% 0;
+    }
+
+    .title_lockup {
+        width: 84%;
+    }
+
+    .franchise_mark {
+        width: clamp(118px, 28cqw, 220px);
+        margin-bottom: 5%;
+    }
+
+    .title_lockup h1 {
+        font-size: clamp(22px, 6.3cqw, 54px);
+    }
+
+    .title_mission {
+        max-width: 26em;
+        font-size: clamp(12px, 2.5cqw, 19px);
+    }
+
+    .start_button,
+    .player_form {
+        margin-top: 6%;
+    }
+
+    .start_button,
+    .player_name,
+    .player_submit {
+        font-size: clamp(9px, 1.8cqw, 13px);
+    }
+
+    .title_links {
+        margin-top: 2%;
+        font-size: clamp(8px, 1.55cqw, 12px);
+    }
+
+    .title_hint {
+        max-width: 31em;
+        margin-top: 3%;
+        font-size: clamp(9px, 1.75cqw, 13px);
+    }
+
+    .options_panel {
+        inset: max(4%, env(safe-area-inset-top)) 6% auto;
+        width: 88%;
+        max-height: calc(100% - max(8%, env(safe-area-inset-top)) - env(safe-area-inset-bottom));
+    }
+}
+
+@media (orientation: portrait) and (max-height: 900px) {
+    .ewok_character {
+        right: -2%;
+        height: 49%;
+    }
+
+    .title_content {
+        height: 68%;
+        padding-top: max(4vh, env(safe-area-inset-top));
+    }
+
+    .title_lockup {
+        width: 76%;
+    }
+
+    .franchise_mark {
+        width: clamp(90px, 23cqw, 150px);
+        margin-bottom: 3%;
+    }
+
+    .title_lockup h1 {
+        font-size: clamp(18px, 4.6cqw, 30px);
+    }
+
+    .title_mission {
+        margin-top: 4%;
+        font-size: clamp(10px, 2cqw, 14px);
+    }
+
+    .start_button,
+    .player_form {
+        margin-top: 4%;
+    }
+
+    .title_hint {
+        max-width: 25em;
+        margin-top: 2%;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 430px) {
+    .title_content {
+        width: 59%;
+        padding-top: 4%;
+        padding-bottom: 4%;
+    }
+
+    .franchise_mark {
+        width: clamp(80px, 15cqw, 130px);
+        margin-bottom: 2.5%;
+    }
+
+    .title_lockup h1 {
+        font-size: clamp(18px, 3.6cqw, 34px);
+    }
+
+    .title_mission {
+        margin-top: 3%;
+    }
+
+    .start_button,
+    .player_form {
+        margin-top: 4%;
+    }
+
+    .title_hint {
+        margin-top: 2%;
+    }
+}
+
+.options_panel[hidden] {
+    display: none;
+}
+
+.options_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: clamp(12px, 2.5cqh, 24px);
+}
+
+.options_header h2 {
+    margin: 0;
+    color: #7d3d0a;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(18px, 3cqw, 30px);
+    font-weight: 400;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.options_header p,
+.option_row p {
+    margin: 8px 0 0;
+    color: #4b5f50;
+    font-size: clamp(11px, 1.5cqw, 15px);
+    line-height: 1.35;
+}
+
+.options_close {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    padding: 0;
+    background-color: #132017;
+    color: #f5eed8;
+    cursor: pointer;
+    font-size: 30px;
+    line-height: 40px;
+}
+
+.options_close:hover,
+.options_close:focus-visible {
+    background-color: #7d3d0a;
+    outline: 3px solid #eda22c;
+    outline-offset: 2px;
+}
+
+.option_row {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.8fr) minmax(220px, 1.2fr);
+    gap: clamp(14px, 3cqw, 30px);
+    align-items: center;
+    padding: clamp(11px, 2.2cqh, 20px) 0;
+    border-top: 2px solid #b9c3ae;
+}
+
+.option_row label {
+    display: block;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(9px, 1.25cqw, 13px);
+    line-height: 1.4;
+}
+
+.option_row select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    border: 3px solid #7d3d0a;
+    border-radius: 0;
+    padding: 8px 34px 8px 10px;
+    background-color: #fff9e8;
+    color: #132017;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(12px, 1.55cqw, 16px);
+    font-weight: 700;
+    touch-action: manipulation;
+}
+
+.option_row select:focus-visible,
+.speed_control input:focus-visible {
+    outline: 3px solid #eda22c;
+    outline-offset: 3px;
+}
+
+.speed_control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 3.5em;
+    gap: 14px;
+    align-items: center;
+}
+
+.speed_control input {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    accent-color: #7d3d0a;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.speed_control output {
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(12px, 1.8cqw, 18px);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.visually_hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px; /* taste-skill-ignore: standard accessible visually-hidden utility */
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.title_hint {
+    margin: 3% 0 0;
+    color: #c6d2bd;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(7px, 1.35cqw, 14px);
+    line-height: 1.4;
+    animation: control-arrive 600ms 330ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+@keyframes title-arrive {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes control-arrive {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ewok-arrive {
+    from {
+        opacity: 0;
+        transform: translateX(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes ewok-talk {
+    0% {
+        opacity: 0;
+        transform: scaleY(0.15);
+    }
+    40% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scaleY(0.15);
+    }
+}
+
+@keyframes moon-breathe {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.025);
+    }
+}
+
+@keyframes star-blink {
+    0%,
+    60% {
+        opacity: 1;
+    }
+    61%,
+    100% {
+        opacity: 0.25;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .title_screen,
+    .title_lockup,
+    .start_button,
+    .title_hint,
+    .ewok_character,
+    .forest_moon,
+    .forest_star {
+        animation: none;
+        transition: none;
+    }
+
+    .ewok_character--talking .ewok_mouth {
+        animation: none;
+    }
+
+    .wicket_wipe {
+        transition: none !important;
+    }
+}
+
+@media (max-width: 620px), (max-height: 430px) {
+    .options_panel {
+        inset: 4% 4% auto;
+        width: 92%;
+        max-height: 92%;
+    }
+
+    .option_row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .option_row p {
+        display: none;
+    }
+}
+
+.level_name {
+    display: block;
+    position: relative;
+    color: white;
+    bottom: 22px;
+    left: 2px;
+    font-size: 15px;
+}
+
+.game_stage.small > .level_name {
+    font-size: 11px;
+    bottom: 17px;
+}
+
+.back_to_home {
+    position: absolute;
+    z-index: 4;
+    right: 12px;
+    bottom: 5px;
+    width: 32px;
+    height: 32px;
+    background-image: url("../img/NES%20-%20Star%20Wars%20(JPN)%20-%20Miscellaneous%20-%20NPCs%20%26%20Items.png");
+    background-position: -348px -570px;
+    background-size: 592px 750px;
+    image-rendering: pixelated;
+}
+
+.back_to_home:hover,
+.back_to_home:focus-visible {
+    filter: brightness(1.25);
+    outline: 2px solid #f4d96b;
+    outline-offset: 2px;
+}
+
+.back_to_home[hidden] {
+    display: none;
+}
+
+.game_stage.small > .back_to_home {
+    right: 8px;
+    bottom: 5px;
+    zoom: 0.75;
+}
+
+.wicket_button {
+    position: absolute;
+    z-index: 5;
+    right: 7.5%;
+    bottom: 1.5%;
+    display: flex;
+    width: 8%;
+    min-width: 48px;
+    height: 13%;
+    min-height: 48px;
+    padding: 2px 5px;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: 0;
+    background: #000;
+    color: #fff;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.wicket_button[hidden],
+.wicket_prompt[hidden] {
+    display: none;
+}
+
+.wicket_button:hover,
+.wicket_button:focus-visible {
+    color: #f4d96b;
+    outline: 2px solid #f4d96b;
+    outline-offset: -2px;
+}
+
+.wicket_button:active {
+    transform: translateY(2px);
+}
+
+.wicket_sprite_canvas {
+    display: block;
+    image-rendering: pixelated;
+}
+
+.wicket_sprite_canvas--toolbar {
+    width: 25px;
+    height: 36px;
+}
+
+.wicket_count {
+    font-size: 14px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.wicket_prompt {
+    position: absolute;
+    z-index: 20;
+    top: 14%;
+    left: 16%;
+    display: grid;
+    width: 62%;
+    grid-template-columns: 108px minmax(0, 1fr);
+    gap: 22px;
+    padding: 24px;
+    border: 4px solid #d6b44b;
+    background: #071713;
+    box-shadow: 0 12px 0 rgba(0, 0, 0, 0.55);
+    color: #f5eed8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.wicket_prompt_art {
+    display: flex;
+    min-height: 150px;
+    align-items: center;
+    justify-content: center;
+    background: #0d2a22;
+}
+
+.wicket_sprite_canvas--prompt {
+    width: 93px;
+    height: 135px;
+}
+
+.wicket_prompt h2 {
+    margin: 0 0 16px;
+    color: #f4d96b;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 20px;
+    line-height: 1.3;
+}
+
+.wicket_prompt p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.wicket_prompt .wicket_question {
+    margin-top: 12px;
+    font-weight: 700;
+}
+
+.wicket_error {
+    min-height: 20px;
+    margin-top: 8px !important;
+    color: #ff9d8e;
+    font-size: 12px !important;
+}
+
+.wicket_actions {
+    display: flex;
+    margin-top: 14px;
+    gap: 10px;
+}
+
+.wicket_actions button {
+    min-height: 42px;
+    padding: 0 14px;
+    border: 2px solid #f5eed8;
+    background: transparent;
+    color: #f5eed8;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 9px;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.wicket_actions button:last-child {
+    border-color: #d6b44b;
+    background: #d6b44b;
+    color: #071713;
+}
+
+.wicket_actions button:hover,
+.wicket_actions button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.wicket_actions button:active {
+    transform: translateY(2px);
+}
+
+.wicket_actions button:disabled {
+    cursor: wait;
+    opacity: 0.55;
+}
+
+.wicket_wipe {
+    position: absolute;
+    z-index: 30;
+    inset: 0;
+    background: transparent;
+    opacity: 1;
+    pointer-events: all;
+    transition: opacity 240ms linear;
+}
+
+.wicket_wipe[hidden] {
+    display: none;
+}
+
+.wicket_wipe_canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+.game_stage.small > .wicket_button {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 1px 3px;
+}
+
+.game_stage.small > .wicket_button .wicket_sprite_canvas--toolbar {
+    width: 18px;
+    height: 26px;
+}
+
+.game_stage.small > .wicket_button .wicket_count {
+    font-size: 10px;
+}
+
+.game_stage.small > .wicket_prompt {
+    top: 8%;
+    left: 9%;
+    width: 74%;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px;
+    border-width: 3px;
+}
+
+.game_stage.small > .wicket_prompt .wicket_prompt_art {
+    min-height: 110px;
+}
+
+.game_stage.small > .wicket_prompt .wicket_sprite_canvas--prompt {
+    width: 62px;
+    height: 90px;
+}
+
+.game_stage.small > .wicket_prompt h2 {
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.game_stage.small > .wicket_prompt p {
+    font-size: 10px;
+}
+
+.game_stage.small > .wicket_prompt .wicket_error {
+    min-height: 12px;
+    font-size: 8px !important;
+}
+
+.game_stage.small > .wicket_prompt .wicket_actions {
+    margin-top: 7px;
+    gap: 6px;
+}
+
+.game_stage.small > .wicket_prompt .wicket_actions button {
+    min-height: 30px;
+    padding: 0 7px;
+    font-size: 6px;
+}
+
+.arrow_l {
+    display: inline-block;
+    position: relative;
+    bottom: 95px;
+    right: 73px;
+    float: right;
+}
+
+.game_stage.small > .arrow_l {
+    zoom: 0.6
+}
+
+.arrow_r {
+    display: inline-block;
+    position: relative;
+    bottom: 95px;
+    left: 25px;
+    float: right;
+}
+
+.game_stage.small > .arrow_r {
+    zoom: 0.6
+}

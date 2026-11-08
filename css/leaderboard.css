@@ -1,0 +1,206 @@
+.leaderboard_page {
+    overflow: auto;
+    background-color: #071713;
+    color: #f5eed8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.leaderboard_screen {
+    position: relative;
+    min-height: 100dvh;
+    overflow: hidden;
+}
+
+.leaderboard_screen .forest_sky {
+    position: fixed;
+}
+
+.leaderboard_content {
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+    width: min(100% - 40px, 920px);
+    margin: 0 auto;
+    padding: clamp(28px, 6vw, 72px) 0;
+}
+
+.leaderboard_header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 180px);
+    column-gap: 24px;
+    align-items: end;
+    min-height: 210px;
+}
+
+.back_link {
+    display: inline-block;
+    min-height: 44px;
+    margin-top: 26px;
+    padding: 0 22px;
+    background-color: #eda22c;
+    color: #132017;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 44px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.back_link:hover,
+.back_link:focus-visible {
+    background-color: #ffd166;
+}
+
+.leaderboard_header h1 {
+    margin: 0;
+    color: #eda22c;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(36px, 5vw, 68px);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.leaderboard_header p {
+    max-width: 34em;
+    margin: 24px 0 0;
+    font-size: clamp(18px, 2vw, 19px);
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.leaderboard_ewok {
+    display: block;
+    align-self: end;
+    width: 100%;
+    max-height: 270px;
+    object-fit: contain;
+    object-position: center bottom;
+    image-rendering: pixelated;
+}
+
+.leaderboard_panel {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: flex-start;
+    margin-top: 34px;
+    min-height: clamp(220px, 35vh, 360px);
+    box-sizing: border-box;
+    padding: clamp(18px, 4vw, 36px);
+    background-color: #f5eed8;
+    color: #132017;
+}
+
+.leaderboard_status {
+    align-self: center;
+    margin: 0;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.leaderboard_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(13px, 2vw, 18px);
+}
+
+.leaderboard_table[hidden],
+.leaderboard_status[hidden] {
+    display: none;
+}
+
+.leaderboard_table th {
+    padding: 0 14px 18px;
+    color: #4b5f50;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    text-align: left;
+}
+
+.leaderboard_table th:first-child,
+.leaderboard_table td:first-child {
+    width: 10%;
+    padding-left: 0;
+    text-align: center;
+}
+
+.leaderboard_table th:last-child,
+.leaderboard_table td:last-child {
+    text-align: right;
+}
+
+.leaderboard_table td {
+    padding: 15px 14px;
+    border-top: 2px solid #b9c3ae;
+    font-weight: 700;
+}
+
+.leaderboard_meta {
+    display: block;
+    margin-top: 7px;
+    color: #4b5f50;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.45;
+}
+
+.leaderboard_kybers {
+    color: #7d3d0a;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(13px, 1.6vw, 17px);
+}
+
+.leaderboard_table tbody tr:first-child td {
+    border-top-color: #eda22c;
+    color: #7d3d0a;
+}
+
+@media (max-width: 700px) {
+    .leaderboard_content {
+        width: min(100% - 40px, 920px);
+    }
+
+    .leaderboard_header {
+        grid-template-columns: minmax(0, 1fr) 90px;
+        min-height: 170px;
+    }
+
+    .leaderboard_header h1 {
+        font-size: clamp(32px, 5.8vw, 40px);
+    }
+
+    .leaderboard_header p {
+        margin-top: 16px;
+    }
+
+    .leaderboard_ewok {
+        max-height: 180px;
+    }
+
+    .leaderboard_panel {
+        margin-top: 24px;
+        padding: 16px;
+    }
+
+    .leaderboard_table th {
+        padding: 0 6px 12px;
+    }
+
+    .leaderboard_table td {
+        padding: 12px 6px;
+    }
+}
+
+@media (max-width: 560px) {
+    .leaderboard_header {
+        grid-template-columns: 1fr;
+    }
+
+    .leaderboard_ewok {
+        display: none;
+    }
+}

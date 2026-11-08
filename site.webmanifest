@@ -1,0 +1,12 @@
+{
+    "name": "Ewoks: Forest Rescue",
+    "short_name": "Ewoks",
+    "description": "Guide a brave Ewok tribe safely through every level",
+    "icons": [{
+        "src": "img/touch-icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    }],
+    "display": "fullscreen",
+    "orientation": "landscape"
+}

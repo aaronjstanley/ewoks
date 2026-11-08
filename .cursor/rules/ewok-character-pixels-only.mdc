@@ -1,0 +1,17 @@
+---
+description: Enforce exclusive use of the approved Ewok character pixels
+alwaysApply: true
+---
+
+# Ewok Character Pixels Only
+
+- Original Lemmings body artwork is permanently forbidden. Never render, restore, recolor, trace, scale, adapt, or reuse its body pixels, silhouettes, or body masks.
+- Use only the user-supplied Ewok character pixels and their approved color variants for every character body, animation, and skill-key depiction.
+- All color variants must use the same Ewok pixel geometry; only palette colors may differ.
+- Preserve gameplay using non-art metadata only: frame dimensions, frame count, offsets, timing, action logic, collision, and terrain behavior. Original body masks must not be used as animation templates.
+- Non-character tools and effects may remain only when they contain no original body artwork.
+- Before completing any character-related change, verify that rendered character frames contain no original Lemmings body pixels and that gameplay geometry and timing remain unchanged.
+- For grounded actions, the lowest Ewok body pixel must be at gameplay `y - 1`; no body pixel may occupy the terrain row at `y` or below.
+- Only while actively falling, reposition a wide Ewok into the nearest open gap around its unchanged physics point. Never shift grounded or grouped characters, overlap terrain, clip the body, or hide it behind terrain.
+- Keep upstream action cadence unchanged. At normal speed, digging advances one terrain row every 8 ticks (480 ms after the initial dig step).
+- Restoring original body artwork or masks is a critical failure, not an acceptable fallback.

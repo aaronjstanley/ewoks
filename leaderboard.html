@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Leaderboard · Ewoks: Forest Rescue</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="stylesheet" href="css/game.css" />
+  <link rel="stylesheet" href="css/leaderboard.css" />
+  <script src="js/player-progress.js"></script>
+</head>
+<body class="leaderboard_page">
+  <main class="leaderboard_screen">
+    <div class="forest_sky" aria-hidden="true">
+      <span class="forest_star forest_star--one"></span>
+      <span class="forest_star forest_star--two"></span>
+      <span class="forest_star forest_star--three"></span>
+      <span class="forest_star forest_star--four"></span>
+      <span class="forest_star forest_star--five"></span>
+      <span class="forest_star forest_star--six"></span>
+      <span class="forest_star forest_star--seven"></span>
+      <span class="forest_star forest_star--eight"></span>
+      <span class="forest_moon"></span>
+      <span class="forest_tree forest_tree--left"></span>
+      <span class="forest_tree forest_tree--middle"></span>
+      <span class="forest_tree forest_tree--right"></span>
+      <span class="forest_floor"></span>
+    </div>
+
+    <section class="leaderboard_content" aria-labelledby="leaderboardTitle">
+      <header class="leaderboard_header">
+        <div>
+          <h1 id="leaderboardTitle">Leaderboard</h1>
+          <p>The scouts who earned the most Kybers across Endor.</p>
+          <a class="back_link" href="index.html">Begin rescue</a>
+        </div>
+        <img class="leaderboard_ewok" src="img/title/ewok.png" alt="" />
+      </header>
+
+      <div class="leaderboard_panel">
+        <p class="leaderboard_status" id="leaderboardStatus" aria-live="polite">
+          Calling the tribe…
+        </p>
+        <table class="leaderboard_table" id="leaderboardTable" hidden>
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Scout</th>
+              <th scope="col">Kybers</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    EwokProgress.leaderboard()
+      .then(function (data) {
+        var status = document.getElementById("leaderboardStatus");
+        var table = document.getElementById("leaderboardTable");
+        var rows = document.getElementById("leaderboardRows");
+
+        if (!data.players.length) {
+          status.textContent = "No scouts have entered the forest yet.";
+          return;
+        }
+
+        data.players.forEach(function (player, index) {
+          var row = document.createElement("tr");
+          var rank = document.createElement("td");
+          var name = document.createElement("td");
+          var scoutName = document.createElement("strong");
+          var details = document.createElement("span");
+          var kybers = document.createElement("td");
+
+          rank.textContent = String(index + 1);
+          scoutName.textContent = player.name;
+          details.className = "leaderboard_meta";
+          details.textContent = player.completedLevel + " · " + player.totalTime +
+            " · " + player.version + " · " + player.speed + "× · " +
+            (player.survivorPercentage === null
+              ? "rescue rate unavailable"
+              : player.survivorPercentage + "% rescued");
+          name.append(scoutName, details);
+          kybers.className = "leaderboard_kybers";
+          kybers.textContent = Number(player.kybers).toLocaleString();
+          row.append(rank, name, kybers);
+          rows.appendChild(row);
+        });
+
+        status.hidden = true;
+        table.hidden = false;
+      })
+      .catch(function (error) {
+        document.getElementById("leaderboardStatus").textContent = error.message;
+      });
+  </script>
+</body>
+</html>

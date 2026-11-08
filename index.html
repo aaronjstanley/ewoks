@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ewoks: Forest Rescue</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0.0, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Ewoks" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="img/touch-icon-152.png" />
+  <link rel="apple-touch-icon" href="img/touch-icon-152.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="img/touch-icon-152.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/touch-icon-180.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preload" href="img/wicket.png" as="image" />
+  <link rel="preload" href="img/ewoks.png" as="image" />
+  <link type="text/css" rel="stylesheet" href="css/game.css">
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/lemmings.js?v=ewoks-44"></script>
+  <script type="text/javascript" src="js/player-progress.js"></script>
+  <script type="text/javascript">
+    var lemmings;
+    var gameOptionsChanged = false;
+    var urlParameters = new URLSearchParams(window.location.search);
+    var isAdminUser = urlParameters.get("user") === "admin";
+    var levelParameter = urlParameters.get("level");
+    var parsedLevelParameter = Number(levelParameter);
+    var adminLevelOverride =
+      isAdminUser &&
+      /^\d+$/.test(levelParameter || "") &&
+      Number.isSafeInteger(parsedLevelParameter) &&
+      parsedLevelParameter >= 1 &&
+      parsedLevelParameter <= 30
+        ? parsedLevelParameter
+        : null;
+    var wicketParameter = urlParameters.get("wicket");
+    var parsedWicketParameter = Number(wicketParameter);
+    var wicketOverride =
+      isAdminUser &&
+      /^\d+$/.test(wicketParameter || "") &&
+      Number.isSafeInteger(parsedWicketParameter)
+        ? parsedWicketParameter
+        : null;
+    var SESSION_PROGRESS_KEY = "ewoks-session-progress";
+    var wicketCount = 0;
+    var wicketSpriteSheet = new Image();
+    wicketSpriteSheet.src = "img/wicket.png";
+    var ewokFollowerSheet = new Image();
+    ewokFollowerSheet.src = "img/ewoks.png";
+
+    function init() {
+      if (window.location.search && !isAdminUser && wicketOverride === null) {
+        history.replaceState(null, "", window.location.pathname + window.location.hash);
+      }
+      setSize();
+      if (isAdminUser) {
+        document.getElementById("previousLevel").style.display = "";
+        document.getElementById("nextLevel").style.display = "";
+      }
+      document.getElementById("startGame").addEventListener("click", showNameEntry);
+      document.getElementById("playerForm").addEventListener("submit", registerPlayer);
+      document.getElementById("ewokCharacter").addEventListener("click", playEwokSound);
+      document.getElementById("optionsButton").addEventListener("click", openOptions);
+      document.getElementById("optionsClose").addEventListener("click", closeOptions);
+      document.getElementById("gameSpeed").addEventListener("input", updateSpeedOutput);
+      document.getElementById("gameSpeed").addEventListener("change", saveOptions);
+      document.getElementById("gameVersion").addEventListener("change", handleVersionChange);
+      document.getElementById("gameDifficulty").addEventListener("change", saveOptions);
+      document.getElementById("optionsPanel").addEventListener("keydown", handleOptionsKeydown);
+      document.getElementById("backToHome").addEventListener("click", backToHome);
+      document.getElementById("wicketButton").addEventListener("click", openWicketPrompt);
+      document.getElementById("wicketCancel").addEventListener("click", closeWicketPrompt);
+      document.getElementById("wicketConfirm").addEventListener("click", confirmWicket);
+      document.getElementById("wicketPrompt").addEventListener("keydown", handleWicketKeydown);
+      document.addEventListener("pointerdown", playTitleMusic, { once: true });
+      document.addEventListener("keydown", playTitleMusic, { once: true });
+      loadOptions();
+      playTitleMusic();
+    }
+
+    function loadOptions() {
+      document.getElementById("gameVersion").value = "1";
+      document.getElementById("gameDifficulty").value = "1";
+      document.getElementById("gameSpeed").value = "1";
+      enforceVersionDifficulty();
+      updateSpeedOutput();
+    }
+
+    function openOptions() {
+      var panel = document.getElementById("optionsPanel");
+      panel.hidden = false;
+      document.getElementById("gameSpeed").focus();
+    }
+
+    function closeOptions() {
+      document.getElementById("optionsPanel").hidden = true;
+      document.getElementById("optionsButton").focus();
+    }
+
+    function handleOptionsKeydown(event) {
+      if (event.key === "Escape") {
+        closeOptions();
+      }
+    }
+
+    function handleVersionChange() {
+      enforceVersionDifficulty();
+      saveOptions();
+    }
+
+    function enforceVersionDifficulty() {
+      var version = document.getElementById("gameVersion");
+      var difficulty = document.getElementById("gameDifficulty");
+      var finalDifficulty = difficulty.querySelector('option[value="5"]');
+      var episodeOne = version.value === "1";
+
+      finalDifficulty.disabled = episodeOne;
+      if (episodeOne && difficulty.value === "5") {
+        difficulty.value = "1";
+      }
+    }
+
+    function updateSpeedOutput() {
+      var speed = document.getElementById("gameSpeed").value;
+      document.getElementById("gameSpeedValue").textContent = speed + "×";
+    }
+
+    function saveOptions() {
+      gameOptionsChanged = true;
+    }
+
+    function selectedStartProgress(player) {
+      if (adminLevelOverride !== null) {
+        return {
+          gameVersion: 1,
+          groupIndex: 0,
+          levelIndex: adminLevelOverride - 1
+        };
+      }
+
+      if (!gameOptionsChanged) {
+        try {
+          return JSON.parse(sessionStorage.getItem(SESSION_PROGRESS_KEY)) || player;
+        } catch (error) {
+          sessionStorage.removeItem(SESSION_PROGRESS_KEY);
+          return player;
+        }
+      }
+
+      return {
+        gameVersion: Number(document.getElementById("gameVersion").value),
+        groupIndex: Number(document.getElementById("gameDifficulty").value) - 1,
+        levelIndex: 0
+      };
+    }
+
+    function backToHome(event) {
+      event.preventDefault();
+
+      if (lemmings) {
+        sessionStorage.setItem(SESSION_PROGRESS_KEY, JSON.stringify({
+          gameVersion: lemmings.gameType,
+          groupIndex: lemmings.levelGroupIndex,
+          levelIndex: lemmings.levelIndex
+        }));
+      }
+
+      window.location.assign(
+        window.location.pathname + (isAdminUser ? "?user=admin" : "")
+      );
+    }
+
+    function playTitleMusic() {
+      var music = document.getElementById("titleMusic");
+
+      if (!music || lemmings || !music.paused) {
+        return;
+      }
+
+      music.volume = 0.3;
+      music.play().catch(function () {
+        // Browsers may wait for the visitor's first click or key press.
+      });
+    }
+
+    function playEwokSound() {
+      var character = document.getElementById("ewokCharacter");
+      var audio = document.getElementById("ewokVoice");
+
+      audio.currentTime = 0;
+      character.classList.remove("ewok_character--talking");
+      void character.offsetWidth;
+      character.classList.add("ewok_character--talking");
+      audio.play().catch(function () {
+          character.classList.remove("ewok_character--talking");
+      });
+    }
+
+    function showNameEntry() {
+      var startButton = document.getElementById("startGame");
+      var playerForm = document.getElementById("playerForm");
+      var playerName = document.getElementById("playerName");
+
+      startButton.hidden = true;
+      playerForm.hidden = false;
+      document.getElementById("playerSaveHint").hidden = false;
+      playerName.value = EwokProgress.storedName();
+      playerName.focus();
+      playerName.select();
+    }
+
+    function registerPlayer(event) {
+      event.preventDefault();
+
+      var playerForm = document.getElementById("playerForm");
+      var playerName = document.getElementById("playerName");
+      var playerError = document.getElementById("playerError");
+      var submitButton = playerForm.querySelector("button");
+      var name = playerName.value.replace(/\s+/g, " ").trim();
+
+      if (!name) {
+        playerError.textContent = "Enter your name to begin.";
+        playerName.focus();
+        return;
+      }
+
+      playerError.textContent = "";
+      if (name.toLocaleLowerCase() !== EwokProgress.storedName().toLocaleLowerCase()) {
+        sessionStorage.removeItem(SESSION_PROGRESS_KEY);
+      }
+      playerName.disabled = true;
+      submitButton.disabled = true;
+      submitButton.textContent = "ENTERING…";
+
+      EwokProgress.register(name)
+        .then(startGame)
+        .catch(function (error) {
+          playerName.disabled = false;
+          submitButton.disabled = false;
+          submitButton.textContent = "GO";
+          playerError.textContent = error.message;
+          playerName.focus();
+        });
+    }
+
+    function startGame(player) {
+      var titleScreen = document.getElementById("titleScreen");
+
+      if (lemmings) {
+        return;
+      }
+
+      titleScreen.classList.add("title_screen--leaving");
+      updateWicketCount(wicketOverride === null ? player.wickets : wicketOverride);
+      document.getElementById("titleMusic").pause();
+      document.getElementById("titleMusic").currentTime = 0;
+
+      window.setTimeout(function () {
+        lemmings = new Lemmings.GameView(
+          selectedStartProgress(player),
+          Number(document.getElementById("gameSpeed").value),
+          isAdminUser
+        );
+        lemmings.onLevelReached = function (completed, reached, stats) {
+          EwokProgress.save(completed, reached, stats)
+            .then(function (data) {
+              updateWicketCount(data.player.wickets);
+            })
+            .catch(function (error) {
+              console.error("Progress could not be saved:", error);
+            });
+        };
+        lemmings.onLevelFailed = function (attempted) {
+          EwokProgress.recordFailedAttempt(attempted).catch(function (error) {
+            console.error("Failed attempt could not be saved:", error);
+          });
+        };
+        lemmings.elementLevelName = document.getElementById("levelName");
+        lemmings.gameCanvas = document.getElementById("gameCanvas");
+        lemmings.setup();
+        titleScreen.hidden = true;
+        document.getElementById("backToHome").hidden = false;
+      }, 420);
+    }
+
+    function updateWicketCount(count) {
+      var button = document.getElementById("wicketButton");
+      wicketCount = Math.max(0, Number(count) || 0);
+      document.getElementById("wicketCount").textContent = wicketCount;
+      button.hidden = wicketCount === 0;
+      button.setAttribute(
+        "aria-label",
+        wicketCount === 1 ? "Use 1 Wicket" : "Use one of " + wicketCount + " Wickets"
+      );
+      if (wicketCount > 0) {
+        drawWicketSprite(document.getElementById("wicketToolbarSprite"));
+      }
+    }
+
+    function clearWicketSpriteBackground(pixels) {
+      for (var i = 0; i < pixels.data.length; i += 4) {
+        var red = pixels.data[i];
+        var green = pixels.data[i + 1];
+        var blue = pixels.data[i + 2];
+        if (red >= 200 && green <= 80 && blue >= 200) {
+          pixels.data[i + 3] = 0;
+        }
+      }
+    }
+
+    function clearEwokFollowerBackground(pixels) {
+      for (var i = 0; i < pixels.data.length; i += 4) {
+        var red = pixels.data[i];
+        var green = pixels.data[i + 1];
+        var blue = pixels.data[i + 2];
+        if (red >= 140 && red <= 185 && green >= 50 && green <= 95 && blue >= 140 && blue <= 190) {
+          pixels.data[i + 3] = 0;
+        }
+      }
+    }
+
+    function drawWicketSprite(canvas) {
+      function renderSprite() {
+        var sourceX = 14;
+        var sourceY = 92;
+        var sourceWidth = 31;
+        var sourceHeight = 45;
+        var context = canvas.getContext("2d", { willReadFrequently: true });
+        canvas.width = sourceWidth;
+        canvas.height = sourceHeight;
+        context.clearRect(0, 0, sourceWidth, sourceHeight);
+        context.drawImage(
+          wicketSpriteSheet,
+          sourceX,
+          sourceY,
+          sourceWidth,
+          sourceHeight,
+          0,
+          0,
+          sourceWidth,
+          sourceHeight
+        );
+        var pixels = context.getImageData(0, 0, sourceWidth, sourceHeight);
+        clearWicketSpriteBackground(pixels);
+        context.putImageData(pixels, 0, 0);
+      }
+
+      if (wicketSpriteSheet.complete && wicketSpriteSheet.naturalWidth) {
+        renderSprite();
+      } else {
+        wicketSpriteSheet.addEventListener("load", renderSprite, { once: true });
+      }
+    }
+
+    function openWicketPrompt() {
+      if (!lemmings || wicketCount < 1) {
+        return;
+      }
+      lemmings.suspend();
+      document.getElementById("wicketPrompt").hidden = false;
+      document.getElementById("wicketError").textContent = "";
+      drawWicketSprite(document.getElementById("wicketPromptSprite"));
+      document.getElementById("wicketCancel").focus();
+    }
+
+    function closeWicketPrompt() {
+      if (document.getElementById("wicketConfirm").disabled) {
+        return;
+      }
+      document.getElementById("wicketPrompt").hidden = true;
+      if (lemmings) {
+        lemmings.continue();
+      }
+      document.getElementById("wicketButton").focus();
+    }
+
+    function handleWicketKeydown(event) {
+      if (event.key === "Escape") {
+        closeWicketPrompt();
+      }
+    }
+
+    function confirmWicket() {
+      var confirmButton = document.getElementById("wicketConfirm");
+      var cancelButton = document.getElementById("wicketCancel");
+      var error = document.getElementById("wicketError");
+      confirmButton.disabled = true;
+      cancelButton.disabled = true;
+      confirmButton.textContent = "LEADING…";
+      error.textContent = "";
+
+      if (wicketOverride !== null) {
+        wicketOverride = Math.max(0, wicketOverride - 1);
+        performWicketShortcut(wicketOverride).finally(function () {
+          confirmButton.disabled = false;
+          cancelButton.disabled = false;
+          confirmButton.textContent = "USE WICKET";
+        });
+        return;
+      }
+
+      lemmings.getWicketTransition()
+        .then(function (transition) {
+          return EwokProgress.useWicket(transition.completed, transition.reached);
+        })
+        .then(function (data) {
+          return performWicketShortcut(data.player.wickets);
+        })
+        .catch(function (requestError) {
+          error.textContent = requestError.message;
+        })
+        .finally(function () {
+          confirmButton.disabled = false;
+          cancelButton.disabled = false;
+          confirmButton.textContent = "USE WICKET";
+        });
+    }
+
+    function performWicketShortcut(remainingWickets) {
+      updateWicketCount(remainingWickets);
+      document.getElementById("wicketPrompt").hidden = true;
+      return runWicketWipe(function () {
+        return lemmings.skipCurrentLevel();
+      });
+    }
+
+    function runWicketWipe(loadNextLevel) {
+      var overlay = document.getElementById("wicketWipe");
+      var canvas = document.getElementById("wicketWipeCanvas");
+      var context = canvas.getContext("2d");
+      var image = wicketSpriteSheet;
+      var followerImage = ewokFollowerSheet;
+      var frameSpecs = [
+        [14, 138, 31, 49],
+        [43, 138, 31, 49],
+        [72, 138, 34, 49],
+        [102, 138, 34, 49],
+        [132, 138, 34, 49],
+        [163, 138, 34, 49],
+        [193, 138, 34, 49],
+        [224, 138, 34, 49],
+        [253, 138, 34, 49]
+      ];
+      var followerFrameSpecs = [
+        [0, 0, 29, 31],
+        [0, 31, 29, 31],
+        [0, 62, 29, 31],
+        [0, 93, 29, 32]
+      ];
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var blackFadeDuration = reduceMotion ? 350 : 900;
+      var paradeDuration = reduceMotion ? 900 : 3600;
+      var followerCount = 10;
+      var followerGap = 66;
+
+      canvas.width = 800;
+      canvas.height = 480;
+      context.imageSmoothingEnabled = false;
+      overlay.style.opacity = "1";
+      overlay.hidden = false;
+
+      return new Promise(function (resolve, reject) {
+        function beginAnimation() {
+          var frames = frameSpecs.map(function (spec) {
+            var frame = document.createElement("canvas");
+            var frameContext = frame.getContext("2d", { willReadFrequently: true });
+            frame.width = spec[2];
+            frame.height = spec[3];
+            frameContext.drawImage(
+              image,
+              spec[0],
+              spec[1],
+              spec[2],
+              spec[3],
+              0,
+              0,
+              spec[2],
+              spec[3]
+            );
+            var pixels = frameContext.getImageData(0, 0, frame.width, frame.height);
+            clearWicketSpriteBackground(pixels);
+            frameContext.putImageData(pixels, 0, 0);
+            return frame;
+          });
+          var followerFrames = followerFrameSpecs.map(function (spec) {
+            var frame = document.createElement("canvas");
+            var frameContext = frame.getContext("2d", { willReadFrequently: true });
+            frame.width = spec[2];
+            frame.height = spec[3];
+            frameContext.drawImage(
+              followerImage,
+              spec[0],
+              spec[1],
+              spec[2],
+              spec[3],
+              0,
+              0,
+              spec[2],
+              spec[3]
+            );
+            var pixels = frameContext.getImageData(0, 0, frame.width, frame.height);
+            clearEwokFollowerBackground(pixels);
+            frameContext.putImageData(pixels, 0, 0);
+            return frame;
+          });
+          var paradeStartedAt = 0;
+
+          function scheduleFrame(callback) {
+            window.setTimeout(function () {
+              callback(performance.now());
+            }, 16);
+          }
+
+          function animateBlackFade(fadeStartedAt) {
+            var elapsed = performance.now() - fadeStartedAt;
+            var progress = Math.min(1, elapsed / blackFadeDuration);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = "#000";
+            context.globalAlpha = progress;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.globalAlpha = 1;
+
+            if (progress < 1) {
+              scheduleFrame(function () {
+                animateBlackFade(fadeStartedAt);
+              });
+              return;
+            }
+
+            animateParade(performance.now());
+          }
+
+          function animateParade(now) {
+            if (!paradeStartedAt) {
+              paradeStartedAt = now;
+            }
+            var elapsed = now - paradeStartedAt;
+            var progress = Math.min(1, elapsed / paradeDuration);
+            var leaderX = -80 + progress * 1600;
+            var leaderScale = 2.2;
+            var followerScale = 2;
+            var footY = 330;
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = "#000";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (var follower = followerCount - 1; follower >= 0; follower--) {
+              var followerFrame =
+                followerFrames[
+                  (Math.floor(elapsed / 120) + follower) % followerFrames.length
+                ];
+              var followerX = leaderX - (follower + 1) * followerGap;
+              var followerBounce =
+                reduceMotion ? 0 : Math.sin(elapsed / 85 + follower * 0.8) * 6;
+              context.drawImage(
+                followerFrame,
+                Math.round(followerX),
+                Math.round(footY - followerFrame.height * followerScale + followerBounce),
+                followerFrame.width * followerScale,
+                followerFrame.height * followerScale
+              );
+            }
+
+            var leaderFrame = frames[Math.floor(elapsed / 90) % frames.length];
+            var leaderBounce = reduceMotion ? 0 : Math.sin(elapsed / 70) * 8;
+            context.drawImage(
+              leaderFrame,
+              Math.round(leaderX),
+              Math.round(footY - leaderFrame.height * leaderScale + leaderBounce),
+              leaderFrame.width * leaderScale,
+              leaderFrame.height * leaderScale
+            );
+
+            if (progress < 1) {
+              scheduleFrame(animateParade);
+              return;
+            }
+
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            Promise.resolve(loadNextLevel())
+              .then(function () {
+                window.setTimeout(function () {
+                  overlay.style.opacity = "0";
+                  window.setTimeout(function () {
+                    overlay.hidden = true;
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    resolve();
+                  }, 260);
+                }, 100);
+              })
+              .catch(function (wipeError) {
+                overlay.hidden = true;
+                reject(wipeError);
+              });
+          }
+
+          animateBlackFade(performance.now());
+        }
+
+        function handleImageError() {
+          context.fillStyle = "#000";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          Promise.resolve(loadNextLevel()).then(function () {
+            overlay.hidden = true;
+            resolve();
+          }, reject);
+        }
+
+        var animationStarted = false;
+        function beginWhenSpritesReady() {
+          if (
+            animationStarted ||
+            !image.complete ||
+            !image.naturalWidth ||
+            !followerImage.complete ||
+            !followerImage.naturalWidth
+          ) {
+            return;
+          }
+          animationStarted = true;
+          beginAnimation();
+        }
+
+        image.addEventListener("load", beginWhenSpritesReady, { once: true });
+        followerImage.addEventListener("load", beginWhenSpritesReady, { once: true });
+        image.addEventListener("error", handleImageError, { once: true });
+        followerImage.addEventListener("error", handleImageError, { once: true });
+        beginWhenSpritesReady();
+      });
+    }
+
+    function setSize() {
+      var ratio = 800 / 480;
+      var gameStage = jQuery(".game_stage");
+      var viewport = window.visualViewport;
+      var width = viewport ? viewport.width : window.innerWidth;
+      var height = viewport ? viewport.height : window.innerHeight;
+      if (width >= height * ratio) {
+        gameStage.width(height * ratio);
+        gameStage.height(height);
+        gameStage.css("margin-top", "");
+        gameStage.css("margin-left", (width - height * ratio) / 2);
+      } else {
+        gameStage.width(width);
+        gameStage.height(width / ratio);
+        gameStage.css("margin-top", (height - width / ratio) / 2);
+        gameStage.css("margin-left", "");
+      }
+      gameStage.toggleClass("small", gameStage.width() < 640);
+    }
+
+    jQuery(document).ready(function () {
+      setSize();
+    });
+    $(window).on("resize orientationchange", function() {
+      setSize();
+    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", setSize);
+    }
+  </script>
+</head>
+<body onload="init();" oncontextmenu="return false;">
+  <div class="game">
+    <div class="game_container">
+      <div class="game_stage">
+        <canvas height="480" width="800" id="gameCanvas" aria-label="Ewoks: Forest Rescue game"></canvas>
+        <span id="levelName" class="level_name"></span>
+        <img id="previousLevel" class="arrow_l" src="img/arrow_l.png" alt="Previous level" style="display: none" onclick="lemmings.moveToLevel(-1)"/>
+        <img id="nextLevel" class="arrow_r" src="img/arrow_r.png" alt="Next level" style="display: none" onclick="lemmings.moveToLevel(1)"/>
+        <a id="backToHome" class="back_to_home" href="./" aria-label="Back to Home" title="Back to Home" hidden></a>
+        <button class="wicket_button" id="wicketButton" type="button" hidden>
+          <canvas
+            class="wicket_sprite_canvas wicket_sprite_canvas--toolbar"
+            id="wicketToolbarSprite"
+            aria-hidden="true"
+          ></canvas>
+          <span class="wicket_count" id="wicketCount">1</span>
+        </button>
+        <section
+          class="wicket_prompt"
+          id="wicketPrompt"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="wicketTitle"
+          aria-describedby="wicketDescription"
+          hidden
+        >
+          <div class="wicket_prompt_art" aria-hidden="true">
+            <canvas
+              class="wicket_sprite_canvas wicket_sprite_canvas--prompt"
+              id="wicketPromptSprite"
+            ></canvas>
+          </div>
+          <div class="wicket_prompt_content">
+            <h2 id="wicketTitle">Follow Wicket?</h2>
+            <p id="wicketDescription">
+              Wicket will lead you past this level. It will count as complete, but you will earn 0 Kybers.
+            </p>
+            <p class="wicket_question">Use this shortcut?</p>
+            <p class="wicket_error" id="wicketError" aria-live="polite"></p>
+            <div class="wicket_actions">
+              <button id="wicketCancel" type="button">STAY HERE</button>
+              <button id="wicketConfirm" type="button">USE WICKET</button>
+            </div>
+          </div>
+        </section>
+        <div class="wicket_wipe" id="wicketWipe" aria-hidden="true" hidden>
+          <canvas class="wicket_wipe_canvas" id="wicketWipeCanvas"></canvas>
+        </div>
+      </div>
+
+      <main class="title_screen" id="titleScreen">
+        <div class="forest_sky" aria-hidden="true">
+          <span class="forest_star forest_star--one"></span>
+          <span class="forest_star forest_star--two"></span>
+          <span class="forest_star forest_star--three"></span>
+          <span class="forest_star forest_star--four"></span>
+          <span class="forest_star forest_star--five"></span>
+          <span class="forest_star forest_star--six"></span>
+          <span class="forest_star forest_star--seven"></span>
+          <span class="forest_star forest_star--eight"></span>
+          <span class="forest_star forest_star--nine"></span>
+          <span class="forest_star forest_star--ten"></span>
+          <span class="forest_star forest_star--eleven"></span>
+          <span class="forest_star forest_star--twelve"></span>
+          <span class="forest_moon"></span>
+          <span class="forest_tree forest_tree--left"></span>
+          <span class="forest_tree forest_tree--middle"></span>
+          <span class="forest_tree forest_tree--right"></span>
+          <span class="forest_floor"></span>
+        </div>
+        <button
+          class="ewok_character"
+          id="ewokCharacter"
+          type="button"
+          aria-label="Hear the Ewok speak"
+        >
+          <img
+            class="ewok_art"
+            src="img/title/ewok.png"
+            alt=""
+          />
+          <span class="ewok_mouth" aria-hidden="true"></span>
+        </button>
+        <audio
+          id="ewokVoice"
+          src="audio/chucha.mp3"
+          preload="auto"
+          onended="document.getElementById('ewokCharacter').classList.remove('ewok_character--talking')"
+        ></audio>
+        <audio
+          id="titleMusic"
+          src="audio/ewok-theme.mp3"
+          preload="auto"
+          loop
+        ></audio>
+
+        <section class="title_content" aria-labelledby="gameTitle">
+          <div class="title_lockup">
+            <img
+              class="franchise_mark"
+              src="img/title/star-wars-logo-transparent.png"
+              alt="Star Wars"
+            />
+            <h1 id="gameTitle">
+              <span class="title_name">Ewoks</span>
+              <span class="title_chapter">Forest Rescue</span>
+            </h1>
+            <p class="title_mission">Guide every scout home through the realms of Endor.</p>
+          </div>
+          <button class="start_button" id="startGame" type="button">
+            BEGIN RESCUE
+          </button>
+          <form class="player_form" id="playerForm" hidden>
+            <label class="visually_hidden" for="playerName">Enter Username</label>
+            <input
+              class="player_name"
+              id="playerName"
+              name="playerName"
+              type="text"
+              placeholder="Username"
+              maxlength="24"
+              autocomplete="username"
+              aria-describedby="playerSaveHint"
+              required
+            />
+            <button class="player_submit" type="submit">GO</button>
+          </form>
+          <p class="player_save_hint" id="playerSaveHint" hidden>
+            Completed levels save to your username.
+          </p>
+          <p class="player_error" id="playerError" aria-live="polite"></p>
+          <nav class="title_links" aria-label="Game links">
+            <a class="leaderboard_link" href="leaderboard.html">Leaderboard</a>
+            <span aria-hidden="true">|</span>
+            <button class="options_button" id="optionsButton" type="button">Options</button>
+          </nav>
+          <p class="title_hint">Choose a skill. Clear a path. Save the tribe. Alaay loo ta nuv!</p>
+        </section>
+
+        <section
+          class="options_panel"
+          id="optionsPanel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="optionsTitle"
+          hidden
+        >
+          <header class="options_header">
+            <div>
+              <h2 id="optionsTitle">Options</h2>
+              <p>Choose how your rescue begins.</p>
+            </div>
+            <button class="options_close" id="optionsClose" type="button" aria-label="Close options">×</button>
+          </header>
+
+          <div class="option_row">
+            <div>
+              <label for="gameSpeed">Speed</label>
+              <p>Normal speed is 1×.</p>
+            </div>
+            <div class="speed_control">
+              <input id="gameSpeed" type="range" min="1" max="10" step="1" value="1" />
+              <output id="gameSpeedValue" for="gameSpeed">1×</output>
+            </div>
+          </div>
+
+          <div class="option_row">
+            <div>
+              <label for="gameVersion">Version</label>
+              <p>Select a chapter.</p>
+            </div>
+            <select id="gameVersion">
+              <option value="1">Episode I</option>
+              <option value="2">Episode II</option>
+            </select>
+          </div>
+
+          <div class="option_row">
+            <div>
+              <label for="gameDifficulty">Difficulty</label>
+              <p>Difficulty 5 is available in Episode II.</p>
+            </div>
+            <select id="gameDifficulty">
+              <option value="1">1 — Laugh It Up, Fuzzball</option>
+              <option value="2">2 — Do...or do not... there is no try.</option>
+              <option value="3">3 — It’s a trap!</option>
+              <option value="4">4 — I have a bad feeling about this.</option>
+              <option value="5">5 — Never tell me the odds.</option>
+            </select>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+

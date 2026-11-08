@@ -1,0 +1,1142 @@
+{
+ "url": "http://127.0.0.1:8080",
+ "at": "2026-11-07T06:58:52.445Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 7,
+    "css": 7,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 918,
+     "screens": 1,
+     "words": 23,
+     "img": 2,
+     "video": 0,
+     "canvas": 1,
+     "svg": 0,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Forest Rescue",
+     "words": 2,
+     "chars": 13,
+     "lines": 1,
+     "size": 58,
+     "vw": 4,
+     "font": "Georgia",
+     "weight": 900,
+     "tracking": -0.065,
+     "leading": 0.76,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.32,
+     "top": 355,
+     "tag": "span",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "EWOKS Forest Rescue",
+     "words": 3,
+     "lines": 2,
+     "size": 58,
+     "font": "Georgia"
+    },
+    "headings": [
+     {
+      "text": "Forest Rescue",
+      "words": 2,
+      "chars": 13,
+      "lines": 1,
+      "size": 58,
+      "vw": 4,
+      "font": "Georgia",
+      "weight": 900,
+      "tracking": -0.065,
+      "leading": 0.76,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.32,
+      "top": 355,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Arial",
+       "share": 0.86,
+       "mono": false
+      },
+      {
+       "family": "Georgia",
+       "share": 0.1,
+       "mono": false
+      },
+      {
+       "family": "Arial Black",
+       "share": 0.04,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      14,
+      17,
+      18,
+      27,
+      58
+     ],
+     "sizeCount": 5,
+     "notLoaded": [],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 58,
+      "vw": 4,
+      "font": "Georgia",
+      "text": "Forest Rescue"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.04,
+     "centerShare": 0.09,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#020706",
+     "bodyBgHsl": {
+      "h": 168,
+      "s": 0.56,
+      "l": 0.02
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#071713",
+       "top": 18,
+       "hsl": {
+        "h": 165,
+        "s": 0.53,
+        "l": 0.06
+       }
+      },
+      {
+       "color": "#0d2a22",
+       "top": 18,
+       "hsl": {
+        "h": 163,
+        "s": 0.53,
+        "l": 0.11
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#f5eed8",
+       "share": 0.41
+      },
+      {
+       "color": "#c6d2bd",
+       "share": 0.35
+      },
+      {
+       "color": "#f7efd4",
+       "share": 0.1
+      },
+      {
+       "color": "#132017",
+       "share": 0.09
+      },
+      {
+       "color": "#eda22c",
+       "share": 0.04
+      }
+     ],
+     "button": {
+      "bg": "#eda22c",
+      "hsl": {
+       "h": 37,
+       "s": 0.84,
+       "l": 0.55
+      },
+      "fg": "#132017"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": 0,
+     "height": 47,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Begin rescue"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 1,
+     "boxRadius": 50,
+     "squareMedia": 1,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.96
+     }
+    ],
+    "nav": null,
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 918,
+    "margins": {
+     "left": 115,
+     "right": 852
+    },
+    "sections": [
+     {
+      "sel": "canvas#gameCanvas",
+      "tag": "canvas",
+      "top": 18,
+      "height": 864,
+      "words": 0,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": true,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "main#titleScreen.title_screen",
+      "tag": "main",
+      "top": 18,
+      "height": 864,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Forest Rescue",
+       "size": 58,
+       "tag": "h1"
+      },
+      "left": 115,
+      "right": 852,
+      "textLeft": 115,
+      "textRight": 852,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "EWOKS Forest Rescue",
+      "size": 58,
+      "top": 325,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 115,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.47,
+    0.47
+   ],
+   "motion": {
+    "elements": 7,
+    "css": 7,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1306,
+     "screens": 1.3,
+     "words": 23,
+     "img": 2,
+     "video": 0,
+     "canvas": 1,
+     "svg": 0,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Forest Rescue",
+     "words": 2,
+     "chars": 13,
+     "lines": 1,
+     "size": 43.8,
+     "vw": 5.7,
+     "font": "Georgia",
+     "weight": 900,
+     "tracking": -0.065,
+     "leading": 0.76,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.46,
+     "top": 442,
+     "tag": "span",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "EWOKS Forest Rescue",
+     "words": 3,
+     "lines": 2,
+     "size": 43.8,
+     "font": "Georgia"
+    },
+    "headings": [
+     {
+      "text": "Forest Rescue",
+      "words": 2,
+      "chars": 13,
+      "lines": 1,
+      "size": 43.8,
+      "vw": 5.7,
+      "font": "Georgia",
+      "weight": 900,
+      "tracking": -0.065,
+      "leading": 0.76,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.46,
+      "top": 442,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Arial",
+       "share": 0.86,
+       "mono": false
+      },
+      {
+       "family": "Georgia",
+       "share": 0.1,
+       "mono": false
+      },
+      {
+       "family": "Arial Black",
+       "share": 0.04,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      10,
+      13,
+      21,
+      44
+     ],
+     "sizeCount": 4,
+     "notLoaded": [],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 43.8,
+      "vw": 5.7,
+      "font": "Georgia",
+      "text": "Forest Rescue"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.04,
+     "centerShare": 0.09,
+     "smallText": 1
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#020706",
+     "bodyBgHsl": {
+      "h": 168,
+      "s": 0.56,
+      "l": 0.02
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#071713",
+       "top": 282,
+       "hsl": {
+        "h": 165,
+        "s": 0.53,
+        "l": 0.06
+       }
+      },
+      {
+       "color": "#0d2a22",
+       "top": 282,
+       "hsl": {
+        "h": 163,
+        "s": 0.53,
+        "l": 0.11
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#f5eed8",
+       "share": 0.41
+      },
+      {
+       "color": "#c6d2bd",
+       "share": 0.35
+      },
+      {
+       "color": "#f7efd4",
+       "share": 0.1
+      },
+      {
+       "color": "#132017",
+       "share": 0.09
+      },
+      {
+       "color": "#eda22c",
+       "share": 0.04
+      }
+     ],
+     "button": {
+      "bg": "#eda22c",
+      "hsl": {
+       "h": 37,
+       "s": 0.84,
+       "l": 0.55
+      },
+      "fg": "#132017"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": 0,
+     "height": 46,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Begin rescue"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 1,
+     "boxRadius": 50,
+     "squareMedia": 1,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.45
+     }
+    ],
+    "nav": null,
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1306,
+    "margins": {
+     "left": 61,
+     "right": 353
+    },
+    "sections": [
+     {
+      "sel": "canvas#gameCanvas",
+      "tag": "canvas",
+      "top": 282,
+      "height": 461,
+      "words": 0,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": true,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "main#titleScreen.title_screen",
+      "tag": "main",
+      "top": 282,
+      "height": 461,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Forest Rescue",
+       "size": 44,
+       "tag": "h1"
+      },
+      "left": 61,
+      "right": 353,
+      "textLeft": 61,
+      "textRight": 353,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "EWOKS Forest Rescue",
+      "size": 44,
+      "top": 419,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 61,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 13,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.33,
+    0.33
+   ],
+   "motion": {
+    "elements": 7,
+    "css": 7,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 1149,
+     "screens": 1.4,
+     "words": 23,
+     "img": 2,
+     "video": 0,
+     "canvas": 1,
+     "svg": 0,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Forest Rescue",
+     "words": 2,
+     "chars": 13,
+     "lines": 1,
+     "size": 22.2,
+     "vw": 5.7,
+     "font": "Georgia",
+     "weight": 900,
+     "tracking": -0.065,
+     "leading": 0.76,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.46,
+     "top": 366,
+     "tag": "span",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "EWOKS Forest Rescue",
+     "words": 3,
+     "lines": 2,
+     "size": 22.2,
+     "font": "Georgia"
+    },
+    "headings": [
+     {
+      "text": "Forest Rescue",
+      "words": 2,
+      "chars": 13,
+      "lines": 1,
+      "size": 22.2,
+      "vw": 5.7,
+      "font": "Georgia",
+      "weight": 900,
+      "tracking": -0.065,
+      "leading": 0.76,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.46,
+      "top": 366,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Arial",
+       "share": 0.86,
+       "mono": false
+      },
+      {
+       "family": "Georgia",
+       "share": 0.1,
+       "mono": false
+      },
+      {
+       "family": "Arial Black",
+       "share": 0.04,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      7,
+      9,
+      10,
+      22
+     ],
+     "sizeCount": 4,
+     "notLoaded": [],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 22.2,
+      "vw": 5.7,
+      "font": "Georgia",
+      "text": "Forest Rescue"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 1,
+     "microLabelShare": 0.039,
+     "microSamples": [
+      "Ewoks"
+     ],
+     "upperShare": 0.04,
+     "centerShare": 0.09,
+     "smallText": 3
+    },
+    "eyebrows": [
+     {
+      "text": "Ewoks",
+      "above": "Forest Rescue",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10.4,
+      "top": 354
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#020706",
+     "bodyBgHsl": {
+      "h": 168,
+      "s": 0.56,
+      "l": 0.02
+     },
+     "dark": true,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#f5eed8",
+       "share": 0.41
+      },
+      {
+       "color": "#c6d2bd",
+       "share": 0.35
+      },
+      {
+       "color": "#f7efd4",
+       "share": 0.1
+      },
+      {
+       "color": "#132017",
+       "share": 0.09
+      },
+      {
+       "color": "#eda22c",
+       "share": 0.04
+      }
+     ],
+     "button": {
+      "bg": "#eda22c",
+      "hsl": {
+       "h": 37,
+       "s": 0.84,
+       "l": 0.55
+      },
+      "fg": "#132017"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 1,
+     "inHero": 1,
+     "radius": 0,
+     "height": 46,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Begin rescue"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.28
+     }
+    ],
+    "nav": null,
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 1149,
+    "margins": {
+     "left": 31,
+     "right": 202
+    },
+    "sections": [
+     {
+      "sel": "canvas#gameCanvas",
+      "tag": "canvas",
+      "top": 305,
+      "height": 234,
+      "words": 0,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": true,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "main#titleScreen.title_screen",
+      "tag": "main",
+      "top": 305,
+      "height": 234,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Forest Rescue",
+       "size": 22,
+       "tag": "h1"
+      },
+      "left": 31,
+      "right": 202,
+      "textLeft": 31,
+      "textRight": 202,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "EWOKS Forest Rescue",
+      "size": 22,
+      "top": 354,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 31,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 1,
+    "bodySize": 9,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "palette-cream",
+   "width": 1440,
+   "message": "Yellow-cream background (text #f5eed8, text #f7efd4).",
+   "fix": "Use the drawn palette. If you want warmth, take a low-chroma stone or bone, not a yellow cream.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "font-count",
+   "width": 1440,
+   "message": "3 typefaces in use (Arial, Georgia, Arial Black).",
+   "fix": "Two at most.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "FAIL",
+   "id": "off-centre",
+   "width": 1440,
+   "message": "The page sits off-centre: its content comes to 115px from the left edge but only to 852px from the right, at 1440px.",
+   "fix": "Give the page one pair of equal margins. Check the wrapper for a max-width without margin-inline: auto, a grid with an empty last column, or padding on one side only. If one side is meant to hold air, it must still be closed by something that reaches the margin (a picture, the navigation's last item, a figure).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "still-page",
+   "width": 1440,
+   "message": "Only 7 element(s) moved while the page loaded and scrolled.",
+   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
+  },
+  {
+   "level": "WARN",
+   "id": "small-text",
+   "width": 768,
+   "message": "1 text block(s) under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "name-only-title",
+   "width": 768,
+   "message": "The h1 is a bare name (\"EWOKS Forest Rescue\") and nothing else on the first screen says what this is.",
+   "fix": "Keep the name if it leads, and give the line under it (18px or more) the plain words: what it is, for whom, where or when. In the study of 97 Sites of the Day, first screens that named nothing lost usability and content points.",
+   "alsoAt": [
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "eyebrow",
+   "width": 390,
+   "message": "1 eyebrow/kicker label(s) above headings: \"Ewoks\" above \"Forest Rescue\"",
+   "fix": "Delete them. If the label carried real information, fold it into the headline or the supporting sentence."
+  },
+  {
+   "level": "WARN",
+   "id": "micro-label",
+   "width": 390,
+   "message": "1 tiny uppercase letter-spaced label(s): \"Ewoks\"",
+   "fix": "Prefer sentence case at body size."
+  },
+  {
+   "level": "WARN",
+   "id": "small-title",
+   "width": 390,
+   "message": "The h1 is 22px (\"EWOKS Forest Rescue\").",
+   "fix": "Set the title at display size, or make the large text of the first screen the h1."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/Users/aaronjstanley/Documents/GitHub/EwoksGame/.taste-skill/inspect/desktop-fold.jpg",
+   "pages": [
+    "/Users/aaronjstanley/Documents/GitHub/EwoksGame/.taste-skill/inspect/desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/Users/aaronjstanley/Documents/GitHub/EwoksGame/.taste-skill/inspect/tablet-fold.jpg",
+   "pages": [
+    "/Users/aaronjstanley/Documents/GitHub/EwoksGame/.taste-skill/inspect/tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/Users/aaronjstanley/Documents/GitHub/EwoksGame/.taste-skill/inspect/mobile-fold.jpg",
+   "pages": [
+    "/Users/aaronjstanley/Documents/GitHub/EwoksGame/.taste-skill/inspect/mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

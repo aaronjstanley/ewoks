@@ -1,0 +1,30 @@
+{
+  "name": "ewoks-game",
+  "version": "1.0.0",
+  "description": "Ewoks: Forest Rescue",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "http-server --cors=* -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oklemenz/LemmingsJS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oklemenz/LemmingsJS/issues"
+  },
+  "homepage": "https://github.com/oklemenz/LemmingsJS#readme",
+  "devDependencies": {
+    "@types/pg": "^8.23.1",
+    "http-server": "^14.0.1"
+  },
+  "dependencies": {
+    "@neon/config": "^1.13.0",
+    "@neon/env": "^2.1.0",
+    "@neon/functions": "^0.11.0",
+    "pg": "^8.23.1"
+  }
+}
