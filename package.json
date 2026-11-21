@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "start": "http-server --cors=* -c-1"
+    "start": "node scripts/dev-server.js"
   },
   "repository": {
     "type": "git",

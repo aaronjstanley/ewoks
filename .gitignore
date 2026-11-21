@@ -12,3 +12,6 @@ bower_components/
 node_modules/
 .neon
 .env.local
+
+# local troubleshooting dump for AI agents (written by npm start)
+dev/troubleshoot-log.txt

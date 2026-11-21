@@ -1,0 +1,153 @@
+.log_page {
+    overflow: auto;
+    background-color: #071713;
+    color: #f5eed8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.log_screen {
+    box-sizing: border-box;
+    width: min(100% - 32px, 960px);
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 48px) 0;
+}
+
+.log_panel {
+    box-sizing: border-box;
+    padding: clamp(20px, 3.5vw, 36px);
+    background-color: #f5eed8;
+    color: #132017;
+}
+
+.log_header h1 {
+    margin: 0;
+    color: #7d3d0a;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.log_intro {
+    margin: 16px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.log_intro code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.log_toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.log_source_label {
+    color: #4b5f50;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 10px;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.log_source {
+    min-height: 40px;
+    border: 3px solid #eda22c;
+    border-radius: 0;
+    padding: 0 10px;
+    background-color: #fff9e8;
+    color: #132017;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.log_source--remote {
+    flex: 1 1 220px;
+    min-width: min(100%, 220px);
+}
+
+.log_output {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 320px;
+    max-height: min(60dvh, 640px);
+    margin: 20px 0 0;
+    overflow: auto;
+    border: 3px solid #c9b88a;
+    padding: 12px 14px;
+    background-color: #132017;
+    color: #f5eed8;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.log_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.log_button {
+    min-height: 40px;
+    border: 3px solid #eda22c;
+    padding: 0 14px;
+    background-color: #eda22c;
+    color: #132017;
+    cursor: pointer;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 10px;
+    line-height: 34px;
+    text-transform: uppercase;
+}
+
+.log_button:hover,
+.log_button:focus-visible {
+    background-color: #ffd166;
+}
+
+.log_button--danger {
+    background-color: transparent;
+    color: #7d3d0a;
+}
+
+.log_button--danger:hover,
+.log_button--danger:focus-visible {
+    background-color: #eda22c;
+    color: #132017;
+}
+
+.log_status {
+    margin: 12px 0 0;
+    color: #4b5f50;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.log_status[hidden] {
+    display: none;
+}
+
+@media (max-width: 560px) {
+    .log_screen {
+        width: min(100% - 24px, 960px);
+    }
+
+    .log_panel {
+        padding: 18px;
+    }
+}

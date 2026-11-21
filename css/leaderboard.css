@@ -166,6 +166,13 @@
     line-height: 1.45;
 }
 
+.leaderboard_last_played {
+    color: #4b5f50;
+    font-size: clamp(12px, 1.5vw, 15px);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 .leaderboard_kybers {
     color: #7d3d0a;
     font-family: "Press Start 2P", Arial, sans-serif;
@@ -206,10 +213,16 @@
 
     .leaderboard_table th {
         padding: 0 6px 12px;
+        font-size: 11px;
     }
 
     .leaderboard_table td {
         padding: 12px 6px;
+    }
+
+    .leaderboard_last_played {
+        white-space: normal;
+        line-height: 1.35;
     }
 }
 

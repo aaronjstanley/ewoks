@@ -6,7 +6,11 @@ cd /Users/aaronjstanley/Documents/GitHub/EwoksGame && npm install && npm start
 
 http://localhost:8080
 
-
+Troubleshooting (direct link only, no in-app links):
+http://localhost:8080/log.html
+https://www.stanleystuff.com/ewokgame/log.html
+Agent file copy: dev/troubleshoot-log.txt
+Production dumps: Neon API GET /diagnostics and /diagnostics/latest
 
 https://www.spriters-resource.com/nes/starwarsnamco/
 

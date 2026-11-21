@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Troubleshooting Log · Ewoks: Forest Rescue</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="stylesheet" href="css/game.css" />
+  <link rel="stylesheet" href="css/log.css" />
+  <script src="js/troubleshoot-log.js"></script>
+</head>
+<body class="log_page">
+  <main class="log_screen">
+    <section class="log_panel" aria-labelledby="logTitle">
+      <header class="log_header">
+        <h1 id="logTitle">Troubleshooting log</h1>
+        <p class="log_intro">
+          Direct-link only. Interactions and errors sync to the production API
+          and stay in this browser. While <code>npm start</code> is running, a
+          copy is also written to <code>dev/troubleshoot-log.txt</code> for AI agents.
+        </p>
+      </header>
+
+      <div class="log_toolbar">
+        <label class="log_source_label" for="logSource">Source</label>
+        <select id="logSource" class="log_source">
+          <option value="local">This browser</option>
+          <option value="remote">Production server</option>
+        </select>
+        <select id="logRemoteSelect" class="log_source log_source--remote" hidden>
+          <option value="">Loading remote logs…</option>
+        </select>
+      </div>
+
+      <pre class="log_output" id="logOutput" aria-live="polite"></pre>
+
+      <div class="log_actions">
+        <button class="log_button" type="button" id="logRefresh">Refresh</button>
+        <button class="log_button" type="button" id="logCopy">Copy</button>
+        <button class="log_button" type="button" id="logSync">Sync now</button>
+        <button class="log_button" type="button" id="logWriteLocal">Write agent file</button>
+        <button class="log_button log_button--danger" type="button" id="logClear">Clear local</button>
+      </div>
+      <p class="log_status" id="logStatus" aria-live="polite" hidden></p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var output = document.getElementById("logOutput");
+      var status = document.getElementById("logStatus");
+      var source = document.getElementById("logSource");
+      var remoteSelect = document.getElementById("logRemoteSelect");
+      var currentText = "";
+
+      function showStatus(message) {
+        status.hidden = false;
+        status.textContent = message;
+      }
+
+      function setOutput(text) {
+        currentText = text || "";
+        output.textContent = currentText || "No log entries yet.";
+      }
+
+      function formatRemoteLabel(log) {
+        var when = log.createdAt ? new Date(log.createdAt).toLocaleString() : "unknown time";
+        var player = log.playerName || "anonymous";
+        return when + " · " + player + " · " + log.entryCount + " entries · #" + log.id;
+      }
+
+      function loadRemoteList() {
+        return EwokLog.fetchRemoteList()
+          .then(function (logs) {
+            remoteSelect.innerHTML = "";
+            if (!logs.length) {
+              var empty = document.createElement("option");
+              empty.value = "";
+              empty.textContent = "No production logs yet";
+              remoteSelect.appendChild(empty);
+              return logs;
+            }
+            logs.forEach(function (log, index) {
+              var option = document.createElement("option");
+              option.value = String(log.id);
+              option.textContent = formatRemoteLabel(log);
+              if (index === 0) {
+                option.selected = true;
+              }
+              remoteSelect.appendChild(option);
+            });
+            return logs;
+          });
+      }
+
+      function refresh() {
+        if (source.value === "local") {
+          remoteSelect.hidden = true;
+          setOutput(window.EwokLog ? EwokLog.dump() : "");
+          return Promise.resolve();
+        }
+
+        remoteSelect.hidden = false;
+        return loadRemoteList()
+          .then(function () {
+            var id = remoteSelect.value;
+            if (!id) {
+              setOutput("No production logs yet.");
+              return;
+            }
+            return EwokLog.fetchRemoteDump(id).then(setOutput);
+          })
+          .catch(function (error) {
+            setOutput("");
+            showStatus(error.message || "Unable to load production logs.");
+          });
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text).then(function () {
+            return true;
+          }).catch(function () {
+            return copyTextFallback(text);
+          });
+        }
+        return Promise.resolve(copyTextFallback(text));
+      }
+
+      function copyTextFallback(text) {
+        var area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.left = "-9999px";
+        document.body.appendChild(area);
+        area.select();
+        var ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (error) {
+          ok = false;
+        }
+        document.body.removeChild(area);
+        return ok;
+      }
+
+      source.addEventListener("change", function () {
+        refresh().then(function () {
+          showStatus(
+            source.value === "local"
+              ? "Showing this browser’s log."
+              : "Showing production server logs."
+          );
+        });
+      });
+
+      remoteSelect.addEventListener("change", function () {
+        if (!remoteSelect.value) {
+          return;
+        }
+        EwokLog.fetchRemoteDump(remoteSelect.value)
+          .then(setOutput)
+          .catch(function (error) {
+            showStatus(error.message || "Unable to load that dump.");
+          });
+      });
+
+      document.getElementById("logRefresh").addEventListener("click", function () {
+        refresh().then(function () {
+          showStatus("Log refreshed.");
+        });
+      });
+
+      document.getElementById("logCopy").addEventListener("click", function () {
+        copyText(currentText || output.textContent).then(function (ok) {
+          showStatus(
+            ok
+              ? "Log copied to clipboard."
+              : "Could not copy — select the log text manually."
+          );
+        });
+      });
+
+      document.getElementById("logSync").addEventListener("click", function () {
+        EwokLog.sync(true).then(function (result) {
+          var parts = [];
+          if (result.server) {
+            parts.push("production API");
+          }
+          if (result.local) {
+            parts.push("dev/troubleshoot-log.txt");
+          }
+          showStatus(
+            parts.length
+              ? "Synced to " + parts.join(" and ") + "."
+              : "Sync failed. Check network / API deployment."
+          );
+          if (source.value === "remote") {
+            refresh();
+          }
+        });
+      });
+
+      document.getElementById("logWriteLocal").addEventListener("click", function () {
+        var text = currentText || (window.EwokLog ? EwokLog.dump() : "");
+        EwokLog.writeLocalAgentFile(text).then(function (ok) {
+          showStatus(
+            ok
+              ? "Wrote agent copy to dev/troubleshoot-log.txt"
+              : "Local agent file needs npm start (dev server)."
+          );
+        });
+      });
+
+      document.getElementById("logClear").addEventListener("click", function () {
+        EwokLog.clear();
+        if (source.value === "local") {
+          setOutput(EwokLog.dump());
+        }
+        EwokLog.sync(true);
+        showStatus("Local browser log cleared.");
+      });
+
+      refresh();
+      EwokLog.sync(true).then(function (result) {
+        if (result.server || result.local) {
+          var parts = [];
+          if (result.server) {
+            parts.push("production API");
+          }
+          if (result.local) {
+            parts.push("agent file");
+          }
+          showStatus("Synced to " + parts.join(" and ") + ".");
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

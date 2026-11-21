@@ -19,6 +19,7 @@
   <link rel="preload" href="img/sprites/r2.png" as="image" />
   <link type="text/css" rel="stylesheet" href="css/game.css">
   <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/troubleshoot-log.js"></script>
   <script type="text/javascript" src="js/lemmings.js?v=ewoks-46"></script>
   <script type="text/javascript" src="js/player-progress.js"></script>
   <script type="text/javascript">
@@ -46,6 +47,7 @@
         : null;
     var SESSION_PROGRESS_KEY = "ewoks-session-progress";
     var MUSIC_PREFERENCE_KEY = "ewoks-music-enabled";
+    var TITLE_MUSIC_VOLUME = 0.3;
     var musicEnabled = true;
     var optionsOpenedFromGame = false;
     var wicketCount = 0;
@@ -262,10 +264,33 @@
         return;
       }
 
-      music.volume = 0.3;
+      music.volume = TITLE_MUSIC_VOLUME;
       music.play().catch(function () {
         // Browsers may wait for the visitor's first click or key press.
       });
+    }
+
+    function playArturitoSound() {
+      var arturito = document.getElementById("arturitoVoice");
+      if (!arturito) {
+        return;
+      }
+
+      arturito.volume = Math.min(1, TITLE_MUSIC_VOLUME * 1.1);
+      arturito.currentTime = 0;
+      arturito.play().catch(function () {
+        // Browsers may wait for the visitor's first click or key press.
+      });
+    }
+
+    function stopArturitoSound() {
+      var arturito = document.getElementById("arturitoVoice");
+      if (!arturito) {
+        return;
+      }
+
+      arturito.pause();
+      arturito.currentTime = 0;
     }
 
     function playEwokSound() {
@@ -317,9 +342,11 @@
       submitButton.disabled = true;
       submitButton.textContent = "ENTERING…";
 
+      EwokLog.event("player", "register", { name: name });
       EwokProgress.register(name)
         .then(startGame)
         .catch(function (error) {
+          EwokLog.error("player", "register failed", error.message);
           playerName.disabled = false;
           submitButton.disabled = false;
           submitButton.textContent = "GO";
@@ -335,6 +362,11 @@
         return;
       }
 
+      EwokLog.event("game", "start", {
+        name: player && player.name,
+        wickets: player && player.wickets,
+        admin: isAdminUser,
+      });
       titleScreen.classList.add("title_screen--leaving");
       updateWicketCount(wicketOverride === null ? player.wickets : wicketOverride);
       document.getElementById("titleMusic").pause();
@@ -347,21 +379,32 @@
           isAdminUser
         );
         lemmings.onLevelReached = function (completed, reached, stats) {
+          EwokLog.event("game", "level reached", {
+            completed: completed,
+            reached: reached,
+            elapsedMs: stats && stats.elapsedMs,
+            speed: stats && stats.speed,
+            survivorPercentage: stats && stats.survivorPercentage,
+          });
           return EwokProgress.save(completed, reached, stats)
             .then(function (data) {
               updateWicketCount(data.player.wickets);
               return data;
             })
             .catch(function (error) {
+              EwokLog.error("progress", "save failed", error.message);
               console.error("Progress could not be saved:", error);
               return { kybersEarned: 0 };
             });
         };
         lemmings.onLevelComplete = function (kybersEarned) {
+          EwokLog.event("game", "level complete", { kybersEarned: kybersEarned });
           return showKyberCompleteScreen(kybersEarned);
         };
         lemmings.onLevelFailed = function (attempted) {
+          EwokLog.event("game", "level failed", { attempted: attempted });
           EwokProgress.recordFailedAttempt(attempted).catch(function (error) {
+            EwokLog.error("progress", "failed attempt save failed", error.message);
             console.error("Failed attempt could not be saved:", error);
           });
         };
@@ -485,6 +528,7 @@
 
       amount.textContent = earned.toLocaleString();
       screen.hidden = false;
+      playArturitoSound();
       nextButton.focus();
 
       return new Promise(function (resolve) {
@@ -496,6 +540,7 @@
       var screen = document.getElementById("kyberCompleteScreen");
       var resolve = kyberContinueResolver;
       kyberContinueResolver = null;
+      stopArturitoSound();
       screen.hidden = true;
       if (resolve) {
         resolve();
@@ -536,6 +581,7 @@
           return performWicketShortcut(data.player.wickets);
         })
         .catch(function (requestError) {
+          EwokLog.error("wicket", "use failed", requestError.message);
           error.textContent = requestError.message;
         })
         .finally(function () {
@@ -914,6 +960,11 @@
           src="audio/ewok-theme.mp3"
           preload="auto"
           loop
+        ></audio>
+        <audio
+          id="arturitoVoice"
+          src="audio/arturito.mp3"
+          preload="auto"
         ></audio>
 
         <section class="title_content" aria-labelledby="gameTitle">

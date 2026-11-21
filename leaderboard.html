@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="img/favicon.png" />
   <link rel="stylesheet" href="css/game.css" />
   <link rel="stylesheet" href="css/leaderboard.css" />
+  <script src="js/troubleshoot-log.js"></script>
   <script src="js/player-progress.js"></script>
 </head>
 <body class="leaderboard_page">
@@ -49,6 +50,7 @@
             <tr>
               <th scope="col">Rank</th>
               <th scope="col">Scout</th>
+              <th scope="col">Last played</th>
               <th scope="col">Kybers</th>
             </tr>
           </thead>
@@ -59,11 +61,26 @@
   </main>
 
   <script>
+    function formatLastPlayed(value) {
+      if (!value) return "—";
+      var date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "—";
+      return date.toLocaleString(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+    }
+
+    EwokLog.event("leaderboard", "load");
     EwokProgress.leaderboard()
       .then(function (data) {
         var status = document.getElementById("leaderboardStatus");
         var table = document.getElementById("leaderboardTable");
         var rows = document.getElementById("leaderboardRows");
+
+        EwokLog.event("leaderboard", "loaded", {
+          count: data.players.length,
+        });
 
         if (!data.players.length) {
           status.textContent = "No scouts have entered the forest yet.";
@@ -76,6 +93,7 @@
           var name = document.createElement("td");
           var scoutName = document.createElement("strong");
           var details = document.createElement("span");
+          var lastPlayed = document.createElement("td");
           var kybers = document.createElement("td");
 
           rank.textContent = String(index + 1);
@@ -87,9 +105,11 @@
               ? "rescue rate unavailable"
               : player.survivorPercentage + "% rescued");
           name.append(scoutName, details);
+          lastPlayed.className = "leaderboard_last_played";
+          lastPlayed.textContent = formatLastPlayed(player.lastPlayedAt);
           kybers.className = "leaderboard_kybers";
           kybers.textContent = Number(player.kybers).toLocaleString();
-          row.append(rank, name, kybers);
+          row.append(rank, name, lastPlayed, kybers);
           rows.appendChild(row);
         });
 
@@ -97,6 +117,7 @@
         table.hidden = false;
       })
       .catch(function (error) {
+        EwokLog.error("leaderboard", "load failed", error.message);
         document.getElementById("leaderboardStatus").textContent = error.message;
       });
   </script>
