@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Support · Ewoks: Forest Rescue</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="stylesheet" href="css/game.css" />
+  <link rel="stylesheet" href="css/support.css" />
+</head>
+<body class="support_page">
+  <main class="support_screen">
+    <div class="forest_sky" aria-hidden="true">
+      <span class="forest_star forest_star--one"></span>
+      <span class="forest_star forest_star--two"></span>
+      <span class="forest_star forest_star--three"></span>
+      <span class="forest_star forest_star--four"></span>
+      <span class="forest_star forest_star--five"></span>
+      <span class="forest_star forest_star--six"></span>
+      <span class="forest_star forest_star--seven"></span>
+      <span class="forest_star forest_star--eight"></span>
+      <span class="forest_moon"></span>
+      <span class="forest_tree forest_tree--left"></span>
+      <span class="forest_tree forest_tree--middle"></span>
+      <span class="forest_tree forest_tree--right"></span>
+      <span class="forest_floor"></span>
+    </div>
+
+    <section class="support_content" aria-labelledby="supportTitle">
+      <div class="support_layout">
+        <figure class="support_portrait">
+          <img
+            src="img/title/credits-16.png"
+            alt="Pixel art portrait of Aaron Stanley and Jonah Stanley"
+            width="512"
+            height="512"
+          />
+        </figure>
+
+        <div class="support_panel">
+          <header class="support_header">
+            <a class="support_back" href="index.html">Back</a>
+            <h1 id="supportTitle">Support</h1>
+          </header>
+
+          <p class="support_intro">
+            This game was developed by Aaron Stanley and Jonah Stanley with play
+            testing by their amazing friends and family. If you have ideas or find
+            that something isn't working, please let us know by filling out the form
+            below.
+          </p>
+
+          <form
+            class="support_form"
+            id="supportForm"
+            action="https://formsubmit.co/aaronjstanley@gmail.com"
+            method="POST"
+          >
+            <input type="hidden" name="_subject" value="Ewoks Forest Rescue Support" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input
+              type="hidden"
+              name="_next"
+              value=""
+              id="supportNext"
+            />
+            <input type="text" name="_honey" class="support_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+            <label class="support_label" for="supportName">Name</label>
+            <input
+              class="support_input"
+              id="supportName"
+              name="name"
+              type="text"
+              maxlength="80"
+              autocomplete="name"
+              required
+            />
+
+            <label class="support_label" for="supportMessage">Message</label>
+            <textarea
+              class="support_textarea"
+              id="supportMessage"
+              name="message"
+              rows="6"
+              maxlength="4000"
+              required
+            ></textarea>
+
+            <p class="support_status" id="supportStatus" aria-live="polite" hidden></p>
+
+            <button class="support_submit" type="submit">Send message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var next = document.getElementById("supportNext");
+      var status = document.getElementById("supportStatus");
+      var params = new URLSearchParams(window.location.search);
+
+      next.value = window.location.origin + window.location.pathname + "?sent=1";
+
+      if (params.get("sent") === "1") {
+        status.hidden = false;
+        status.textContent = "Thanks — your message is on its way.";
+        history.replaceState(null, "", window.location.pathname);
+      }
+    })();
+  </script>
+</body>
+</html>

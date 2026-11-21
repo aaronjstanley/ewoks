@@ -14,11 +14,12 @@
   <link rel="apple-touch-icon" sizes="152x152" href="img/touch-icon-152.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="img/touch-icon-180.png" />
   <link rel="manifest" href="site.webmanifest" />
-  <link rel="preload" href="img/wicket.png" as="image" />
-  <link rel="preload" href="img/ewoks.png" as="image" />
+  <link rel="preload" href="img/sprites/wicket.png" as="image" />
+  <link rel="preload" href="img/sprites/ewoks.png" as="image" />
+  <link rel="preload" href="img/sprites/r2.png" as="image" />
   <link type="text/css" rel="stylesheet" href="css/game.css">
   <script type="text/javascript" src="js/jquery.js"></script>
-  <script type="text/javascript" src="js/lemmings.js?v=ewoks-45"></script>
+  <script type="text/javascript" src="js/lemmings.js?v=ewoks-46"></script>
   <script type="text/javascript" src="js/player-progress.js"></script>
   <script type="text/javascript">
     var lemmings;
@@ -49,9 +50,9 @@
     var optionsOpenedFromGame = false;
     var wicketCount = 0;
     var wicketSpriteSheet = new Image();
-    wicketSpriteSheet.src = "img/wicket.png";
+    wicketSpriteSheet.src = "img/sprites/wicket.png";
     var ewokFollowerSheet = new Image();
-    ewokFollowerSheet.src = "img/ewoks.png";
+    ewokFollowerSheet.src = "img/sprites/ewoks.png";
 
     function init() {
       if (window.location.search && !isAdminUser && wicketOverride === null) {
@@ -79,6 +80,8 @@
       document.getElementById("wicketCancel").addEventListener("click", closeWicketPrompt);
       document.getElementById("wicketConfirm").addEventListener("click", confirmWicket);
       document.getElementById("wicketPrompt").addEventListener("keydown", handleWicketKeydown);
+      document.getElementById("kyberNextLevel").addEventListener("click", continueFromKyberScreen);
+      document.getElementById("kyberCompleteScreen").addEventListener("keydown", handleKyberScreenKeydown);
       document.addEventListener("pointerdown", playTitleMusic, { once: true });
       document.addEventListener("keydown", playTitleMusic, { once: true });
       loadOptions();
@@ -344,13 +347,18 @@
           isAdminUser
         );
         lemmings.onLevelReached = function (completed, reached, stats) {
-          EwokProgress.save(completed, reached, stats)
+          return EwokProgress.save(completed, reached, stats)
             .then(function (data) {
               updateWicketCount(data.player.wickets);
+              return data;
             })
             .catch(function (error) {
               console.error("Progress could not be saved:", error);
+              return { kybersEarned: 0 };
             });
+        };
+        lemmings.onLevelComplete = function (kybersEarned) {
+          return showKyberCompleteScreen(kybersEarned);
         };
         lemmings.onLevelFailed = function (attempted) {
           EwokProgress.recordFailedAttempt(attempted).catch(function (error) {
@@ -464,6 +472,40 @@
     function handleWicketKeydown(event) {
       if (event.key === "Escape") {
         closeWicketPrompt();
+      }
+    }
+
+    var kyberContinueResolver = null;
+
+    function showKyberCompleteScreen(kybersEarned) {
+      var screen = document.getElementById("kyberCompleteScreen");
+      var amount = document.getElementById("kyberEarnedAmount");
+      var nextButton = document.getElementById("kyberNextLevel");
+      var earned = Math.max(0, Math.round(Number(kybersEarned) || 0));
+
+      amount.textContent = earned.toLocaleString();
+      screen.hidden = false;
+      nextButton.focus();
+
+      return new Promise(function (resolve) {
+        kyberContinueResolver = resolve;
+      });
+    }
+
+    function continueFromKyberScreen() {
+      var screen = document.getElementById("kyberCompleteScreen");
+      var resolve = kyberContinueResolver;
+      kyberContinueResolver = null;
+      screen.hidden = true;
+      if (resolve) {
+        resolve();
+      }
+    }
+
+    function handleKyberScreenKeydown(event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        continueFromKyberScreen();
       }
     }
 
@@ -772,6 +814,30 @@
           <span class="wicket_count" id="wicketCount">1</span>
         </button>
         <section
+          class="kyber_complete_screen"
+          id="kyberCompleteScreen"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="kyberCompleteTitle"
+          aria-describedby="kyberCompleteDescription"
+          hidden
+        >
+          <img
+            class="kyber_complete_r2"
+            src="img/sprites/r2.png"
+            width="187"
+            height="286"
+            alt=""
+          />
+          <div class="kyber_complete_copy">
+            <h2 id="kyberCompleteTitle">Level clear</h2>
+            <p id="kyberCompleteDescription">
+              You earned <span id="kyberEarnedAmount">0</span> Kybers
+            </p>
+            <button id="kyberNextLevel" type="button">NEXT LEVEL</button>
+          </div>
+        </section>
+        <section
           class="wicket_prompt"
           id="wicketPrompt"
           role="dialog"
@@ -854,7 +920,7 @@
           <div class="title_lockup">
             <img
               class="franchise_mark"
-              src="img/title/star-wars-logo-transparent.png"
+              src="img/title/star-wars-logo.svg"
               alt="Star Wars"
             />
             <h1 id="gameTitle">
@@ -882,13 +948,15 @@
             <button class="player_submit" type="submit">GO</button>
           </form>
           <p class="player_save_hint" id="playerSaveHint" hidden>
-            Completed levels save to your username.
+            Continue your progress by using the same username.
           </p>
           <p class="player_error" id="playerError" aria-live="polite"></p>
           <nav class="title_links" aria-label="Game links">
             <a class="leaderboard_link" href="leaderboard.html">Leaderboard</a>
             <span aria-hidden="true">|</span>
             <button class="options_button" id="optionsButton" type="button">Options</button>
+            <span aria-hidden="true">|</span>
+            <a class="leaderboard_link" href="support.html">Support</a>
           </nav>
           <p class="title_hint">Choose a skill. Clear a path. Save the tribe. Alaay loo ta nuv!</p>
         </section>

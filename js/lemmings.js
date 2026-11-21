@@ -83,7 +83,7 @@ var Lemmings;
         }
         getEwokSpriteSheet() {
             if (this.ewokSpriteSheet == null)
-                this.ewokSpriteSheet = Lemmings.EwokSpriteSheet.load("img/ewoks.png");
+                this.ewokSpriteSheet = Lemmings.EwokSpriteSheet.load("img/sprites/ewoks.png");
             return this.ewokSpriteSheet;
         }
         getMasks() {
@@ -8251,6 +8251,7 @@ var Lemmings;
             this.elementGameState = null;
             this.onLevelReached = null;
             this.onLevelFailed = null;
+            this.onLevelComplete = null;
             this.startProgress = startProgress;
             this.allowLevelNavigation = allowLevelNavigation === true;
             this.gameSpeedFactor = 1;
@@ -8311,8 +8312,27 @@ var Lemmings;
             if (gameResult.state != Lemmings.GameStateTypes.SUCCEEDED && this.onLevelFailed) {
                 this.onLevelFailed(completed);
             }
+            let levelCompleteSave = null;
+            if (gameResult.state == Lemmings.GameStateTypes.SUCCEEDED && this.onLevelComplete) {
+                levelCompleteSave = this.getWicketTransition().then((transition) => {
+                    if (!this.onLevelReached) {
+                        return { kybersEarned: 0 };
+                    }
+                    return Promise.resolve(this.onLevelReached(transition.completed, transition.reached, scoreStats))
+                        .catch(() => ({ kybersEarned: 0 }));
+                });
+            }
             window.setTimeout(() => {
                 if (gameResult.state == Lemmings.GameStateTypes.SUCCEEDED) {
+                    if (this.onLevelComplete && levelCompleteSave) {
+                        levelCompleteSave.then((data) => {
+                            const earned = data && data.kybersEarned != null ? Number(data.kybersEarned) : 0;
+                            return this.onLevelComplete(Number.isFinite(earned) ? earned : 0);
+                        }).then(() => {
+                            this.moveToLevel(1, false, null, null, "continue");
+                        });
+                        return;
+                    }
                     /// move to next level
                     this.moveToLevel(1, true, completed, scoreStats);
                 }
@@ -8439,7 +8459,7 @@ var Lemmings;
         moveToLevel(moveInterval, trackProgress, completedProgress, scoreStats, progressKind) {
             if (moveInterval == null)
                 moveInterval = 0;
-            if (moveInterval !== 0 && !trackProgress && !this.allowLevelNavigation) {
+            if (moveInterval !== 0 && !trackProgress && progressKind !== "continue" && !this.allowLevelNavigation) {
                 return;
             }
             if (this.levelIndex + moveInterval < 0 && this.levelGroupIndex == 0) {
@@ -9424,7 +9444,7 @@ var Lemmings;
                 };
                 this.redraw();
             };
-            image.src = "img/death%20star.png";
+            image.src = "img/sprites/death%20star.png";
         }
         loadSpaceShipSprites() {
             const spriteSheet = new Image();
@@ -9462,19 +9482,19 @@ var Lemmings;
                 }).filter((sprite) => sprite.pixels.length > 0);
                 this.redraw();
             };
-            spriteSheet.src = "img/NES%20-%20Star%20Wars%20(JPN)%20-%20Playable%20Characters%20-%20Playable%20Ships.png";
+            spriteSheet.src = "img/sprites/NES%20-%20Star%20Wars%20(JPN)%20-%20Playable%20Characters%20-%20Playable%20Ships.png";
         }
         loadDecorativeCharacterSprites() {
             const sheets = [
                 {
-                    src: "img/bantha.png",
+                    src: "img/sprites/bantha.png",
                     crops: [
                         { x: 2, y: 18, width: 58, height: 77, scale: 0.55 },
                         { x: 48, y: 98, width: 214, height: 84, scale: 0.35 }
                     ]
                 },
                 {
-                    src: "img/endor-enemies.png",
+                    src: "img/sprites/endor-enemies.png",
                     crops: [
                         { x: 1, y: 1, width: 58, height: 96, scale: 0.55 },
                         { x: 252, y: 187, width: 55, height: 48, scale: 0.6 },
@@ -9482,40 +9502,40 @@ var Lemmings;
                     ]
                 },
                 {
-                    src: "img/jawas.png",
+                    src: "img/sprites/jawas.png",
                     crops: [
                         { x: 7, y: 4, width: 29, height: 44, scale: 1 },
                         { x: 67, y: 88, width: 34, height: 59, scale: 0.75 }
                     ]
                 },
                 {
-                    src: "img/kahlar.png",
+                    src: "img/sprites/kahlar.png",
                     crops: [
                         { x: 2, y: 43, width: 145, height: 115, scale: 0.35 },
                         { x: 218, y: 177, width: 181, height: 126, scale: 0.3 }
                     ]
                 },
                 {
-                    src: "img/support1.png",
+                    src: "img/sprites/support1.png",
                     crops: [
                         { x: 7, y: 66, width: 38, height: 62, scale: 0.65 },
                         { x: 150, y: 7, width: 44, height: 54, scale: 0.8 }
                     ]
                 },
                 {
-                    src: "img/tattooine.png",
+                    src: "img/sprites/tattooine.png",
                     crops: [
                         { x: 95, y: 194, width: 65, height: 72, scale: 0.45 }
                     ]
                 },
                 {
-                    src: "img/wicket.png",
+                    src: "img/sprites/wicket.png",
                     crops: [
                         { x: 17, y: 111, width: 25, height: 45, scale: 0.75 }
                     ]
                 },
                 {
-                    src: "img/womprat.png",
+                    src: "img/sprites/womprat.png",
                     crops: [
                         { x: 2, y: 42, width: 145, height: 143, scale: 0.32 },
                         { x: 175, y: 193, width: 190, height: 107, scale: 0.3 }

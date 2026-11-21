@@ -32,10 +32,16 @@
     min-height: 210px;
 }
 
+.leaderboard_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+}
+
 .back_link {
     display: inline-block;
     min-height: 44px;
-    margin-top: 26px;
     padding: 0 22px;
     background-color: #eda22c;
     color: #132017;
@@ -46,9 +52,21 @@
     text-transform: uppercase;
 }
 
+.back_link--secondary {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 3px #eda22c;
+    color: #eda22c;
+}
+
 .back_link:hover,
 .back_link:focus-visible {
     background-color: #ffd166;
+    color: #132017;
+}
+
+.back_link--secondary:hover,
+.back_link--secondary:focus-visible {
+    box-shadow: inset 0 0 0 3px #ffd166;
 }
 
 .leaderboard_header h1 {

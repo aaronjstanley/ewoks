@@ -339,7 +339,6 @@ body * {
     width: clamp(88px, 18cqw, 190px);
     height: auto;
     margin: 0 0 4%;
-    image-rendering: pixelated;
 }
 
 .title_lockup h1 {
@@ -1019,7 +1018,7 @@ body * {
     bottom: 5px;
     width: 32px;
     height: 32px;
-    background-image: url("../img/NES%20-%20Star%20Wars%20(JPN)%20-%20Miscellaneous%20-%20NPCs%20%26%20Items.png");
+    background-image: url("../img/sprites/NES%20-%20Star%20Wars%20(JPN)%20-%20Miscellaneous%20-%20NPCs%20%26%20Items.png");
     background-position: -348px -570px;
     background-size: 592px 750px;
     image-rendering: pixelated;
@@ -1106,8 +1105,91 @@ body * {
 }
 
 .wicket_button[hidden],
-.wicket_prompt[hidden] {
+.wicket_prompt[hidden],
+.kyber_complete_screen[hidden] {
     display: none;
+}
+
+.kyber_complete_screen {
+    position: absolute;
+    z-index: 25;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 24px;
+    background: rgba(2, 7, 6, 0.92);
+    color: #f5eed8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.kyber_complete_r2 {
+    display: block;
+    width: 94px;
+    height: auto;
+    image-rendering: pixelated;
+    animation: kyber-r2-bob 1.6s ease-in-out infinite;
+}
+
+.kyber_complete_copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+}
+
+.kyber_complete_copy h2 {
+    margin: 0;
+    color: #f4d96b;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.35;
+}
+
+.kyber_complete_copy p {
+    margin: 0;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#kyberEarnedAmount {
+    color: #7fd7ff;
+}
+
+#kyberNextLevel {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 2px solid #d6b44b;
+    background: #d6b44b;
+    color: #071713;
+    font-family: "Press Start 2P", Arial, sans-serif;
+    font-size: 10px;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+#kyberNextLevel:hover,
+#kyberNextLevel:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+#kyberNextLevel:active {
+    transform: translateY(2px);
+}
+
+@keyframes kyber-r2-bob {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
 }
 
 .wicket_button:hover,
@@ -1267,6 +1349,33 @@ body * {
 
 .game_stage.small > .wicket_button .wicket_count {
     font-size: 10px;
+}
+
+.game_stage.small > .kyber_complete_screen {
+    gap: 12px;
+    padding: 14px;
+}
+
+.game_stage.small > .kyber_complete_screen .kyber_complete_r2 {
+    width: 64px;
+}
+
+.game_stage.small > .kyber_complete_screen .kyber_complete_copy {
+    gap: 10px;
+}
+
+.game_stage.small > .kyber_complete_screen h2 {
+    font-size: 12px;
+}
+
+.game_stage.small > .kyber_complete_screen p {
+    font-size: 8px;
+}
+
+.game_stage.small > .kyber_complete_screen #kyberNextLevel {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 7px;
 }
 
 .game_stage.small > .wicket_prompt {

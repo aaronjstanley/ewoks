@@ -285,6 +285,7 @@ export default {
           speed,
           survivorPercentage,
         });
+        const perfectClear = survivorPercentage === 100 ? 1 : 0;
         const result = await pool.query(
           `UPDATE players
            SET highest_level = GREATEST(highest_level, $2),
@@ -299,11 +300,11 @@ export default {
                speed_set = $11,
                survivor_percentage = $12,
                wickets = wickets + CASE
-                 WHEN $12 = 100 AND perfect_win_streak = 4 THEN 1
+                 WHEN $13 = 1 AND perfect_win_streak = 4 THEN 1
                  ELSE 0
                END,
                perfect_win_streak = CASE
-                 WHEN $12 <> 100 THEN 0
+                 WHEN $13 = 0 THEN 0
                  WHEN perfect_win_streak = 4 THEN 0
                  ELSE perfect_win_streak + 1
                END,
@@ -325,6 +326,7 @@ export default {
             completedProgress.groupIndex,
             speed,
             survivorPercentage,
+            perfectClear,
           ],
         );
 
@@ -337,9 +339,9 @@ export default {
             [id],
           );
           if (!current.rowCount) return json(request, { error: "Player not found." }, 404);
-          return json(request, { player: publicPlayer(current.rows[0]) });
+          return json(request, { player: publicPlayer(current.rows[0]), kybersEarned: 0 });
         }
-        return json(request, { player: publicPlayer(result.rows[0]) });
+        return json(request, { player: publicPlayer(result.rows[0]), kybersEarned });
       }
 
       if (request.method === "POST" && url.pathname === "/attempt") {
